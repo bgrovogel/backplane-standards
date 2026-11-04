@@ -1,0 +1,8 @@
+# Build output and local tools
+bin/
+obj/
+node_modules/
+TestResults/
+*.received.*
+.vs/
+.idea/
