@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Every job only reads the repository; nothing here pushes, comments or releases.
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+      # Warnings are errors, and the code style is checked by the build.
+      - run: dotnet build Platform.sln -c Release -warnaserror --nologo
+      # The SDK's tests pack it and build real samples with it; the conventions tests hold this repository's own code to the rules it ships.
+      - run: dotnet test Platform.sln -c Release --no-build --nologo
+
+  documents:
+    name: Documents are formatted and linked
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run format:check
+      - run: python3 tools/check_links.py
