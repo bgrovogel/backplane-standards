@@ -3,7 +3,7 @@
 How we build every application from now on: one set of standards, one set of reusable capabilities, one starter, so a new
 application starts with every quality gate switched on and its common features already built.
 
-This folder is the **plan and the rulebook**, and since 2026-11-04 it is a git repository on this machine only (no remote yet): `platform-standards`, the first
+This folder is the **plan and the rulebook**, and since 2026-11-04 it is a git repository, public on GitHub as `bgrovogel/platform-standards`: the first
 repository of the plan ([document 9](docs/09-repositories-and-delivery.md#repositories); roadmap task 1.1). It keeps the folder name `platform` until the platform
 name is chosen. It holds no application code yet.
 

@@ -1,6 +1,6 @@
 # 0004. Few repositories, monorepos for kits, a local-then-private package feed
 
-**Status:** Proposed; **the owner decides public or private** · **Date:** 2026-11-03 · **Decided by:** to be accepted by the owner
+**Status:** Proposed; **the owner decided on 2026-11-04 that `platform-standards` is public for now** (the kit repositories and packages are still open) · **Date:** 2026-11-03 · **Decided by:** to be accepted by the owner
 
 ## Context
 
