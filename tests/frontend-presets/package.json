@@ -6,6 +6,6 @@
     "test": "node --test"
   },
   "dependencies": {
-    "@platform/frontend-presets": "0.1.0"
+    "@backplane/frontend-presets": "0.1.0"
   }
 }

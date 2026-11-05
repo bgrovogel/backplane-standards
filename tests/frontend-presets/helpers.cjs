@@ -2,7 +2,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { ESLint } = require('eslint');
-const { createEslintConfig } = require('@platform/frontend-presets/eslint');
+const { createEslintConfig } = require('@backplane/frontend-presets/eslint');
 
 /** The features a sample project has, so the layer rule has something to separate. */
 const FEATURES = ['calculator', 'compare', 'history'];

@@ -9,7 +9,7 @@ Playwright suite. Hyvva and the-hive added complementary practices: architecture
 
 ## Decision
 
-We will take the reference app's standards as the **baseline** for every new application and capability, extend them with the practices above and with the additions in [Quality gates](../03-quality-gates.md) and [Testing strategy](../04-testing-strategy.md), package them in `platform-standards`, and make
+We will take the reference app's standards as the **baseline** for every new application and capability, extend them with the practices above and with the additions in [Quality gates](../03-quality-gates.md) and [Testing strategy](../04-testing-strategy.md), package them in `backplane-standards`, and make
 **every rule enforced by a machine or marked as a review rule**. A gate is relaxed only through the exception process.
 
 ## Alternatives considered

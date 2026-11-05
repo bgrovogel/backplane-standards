@@ -1,6 +1,6 @@
 # 0004. Few repositories, monorepos for kits, a local-then-private package feed
 
-**Status:** Proposed; **the owner decided on 2026-11-04 that `platform-standards` is public for now** (the kit repositories and packages are still open) · **Date:** 2026-11-03 · **Decided by:** to be accepted by the owner
+**Status:** Proposed; **the owner decided on 2026-11-04 that `backplane-standards` is public for now** (the kit repositories and packages are still open) · **Date:** 2026-11-03 · **Decided by:** to be accepted by the owner
 
 ## Context
 
@@ -11,7 +11,7 @@ The owner has said CI time is limited and `mortgage-analytics` became private on
 
 ## Decision
 
-We will keep **few repositories**: `platform-standards`, `app-template`, `platform-kit`, `platform-ui`, `platform-capabilities`, plus one per application. Each kit repository is a **monorepo** of many packages, each versioned and published on its own from a git tag. A repository is created only when something
+We will keep **few repositories**: `backplane-standards`, `app-template`, `backplane-kit`, `backplane-ui`, `backplane-capabilities`, plus one per application. Each kit repository is a **monorepo** of many packages, each versioned and published on its own from a git tag. A repository is created only when something
 needs to live in it. Packages are published **from the owner's machine** by a release script that runs the full local gates (so publishing costs no CI minutes), first to a **local folder feed**, then to **private GitHub Packages**. Repositories stay **private** until the owner decides to open them.
 
 ## Alternatives considered

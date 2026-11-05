@@ -137,11 +137,11 @@ Every term of art, abbreviation and technology name used in these documents, in 
 
 ## K
 
-| Term                   | Plain meaning                                                            |
-| ---------------------- | ------------------------------------------------------------------------ |
-| **KISS**               | Keep it simple                                                           |
-| **Kit (platform-kit)** | Our repository of reusable .NET libraries with no data and no deployment |
-| **Kestrel**            | ASP.NET Core's built-in web server                                       |
+| Term                    | Plain meaning                                                            |
+| ----------------------- | ------------------------------------------------------------------------ |
+| **KISS**                | Keep it simple                                                           |
+| **Kit (backplane-kit)** | Our repository of reusable .NET libraries with no data and no deployment |
+| **Kestrel**             | ASP.NET Core's built-in web server                                       |
 
 ## L
 

@@ -94,7 +94,7 @@ class ThisRepository(unittest.TestCase):
         )
 
     def test_the_map_names_the_folders_the_csharp_readme_rule_requires(self):
-        source = (run.HERE.parents[1] / 'tests' / 'Platform.Conventions.Tests' / 'Readme.cs').read_text(encoding='utf-8')
+        source = (run.HERE.parents[1] / 'tests' / 'Backplane.Conventions.Tests' / 'Readme.cs').read_text(encoding='utf-8')
         block = re.search(r'NamedFolders\s*=>\s*\[(.*?)\];', source, re.S).group(1)
 
         self.assertEqual(

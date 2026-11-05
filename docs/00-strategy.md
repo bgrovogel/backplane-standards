@@ -141,18 +141,18 @@ single user directory if we decide we want one sign-in across all apps. Everythi
 
 ## What we standardize
 
-| Area               | What is standardized                                                                                | Where it lives                          |
-| ------------------ | --------------------------------------------------------------------------------------------------- | --------------------------------------- |
-| Build rules        | Compiler strictness, analyzers, code style in the build, locked packages, XML docs                  | `platform-standards`                    |
-| Conventions tests  | The Roslyn tests that read our code and fail the build when a rule is broken                        | `platform-standards`                    |
-| Test stack         | NUnit, NSubstitute, test clock, builders, Testcontainers, Playwright and axe helpers                | `platform-standards` and `platform-kit` |
-| Mutation testing   | Stryker settings and score thresholds                                                               | `platform-standards`                    |
-| Pipeline           | One reusable workflow, so each app's pipeline file is a few lines                                   | `platform-standards`                    |
-| Cross-cutting code | Logging with redaction, request ids, clock, idempotency, rate limiting, security headers, results   | `platform-kit`                          |
-| UI                 | Design tokens, components, the app shell (header, account menu, settings, dialogs), theme, language | `platform-ui`                           |
-| Capabilities       | Sign-in, email, billing, audit trail, notifications, files, feature flags                           | `platform-capabilities`                 |
-| First day          | A starter solution with all of the above wired in                                                   | `app-template`                          |
-| Knowledge          | These documents and the primers                                                                     | `platform-standards`                    |
+| Area               | What is standardized                                                                                | Where it lives                            |
+| ------------------ | --------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| Build rules        | Compiler strictness, analyzers, code style in the build, locked packages, XML docs                  | `backplane-standards`                     |
+| Conventions tests  | The Roslyn tests that read our code and fail the build when a rule is broken                        | `backplane-standards`                     |
+| Test stack         | NUnit, NSubstitute, test clock, builders, Testcontainers, Playwright and axe helpers                | `backplane-standards` and `backplane-kit` |
+| Mutation testing   | Stryker settings and score thresholds                                                               | `backplane-standards`                     |
+| Pipeline           | One reusable workflow, so each app's pipeline file is a few lines                                   | `backplane-standards`                     |
+| Cross-cutting code | Logging with redaction, request ids, clock, idempotency, rate limiting, security headers, results   | `backplane-kit`                           |
+| UI                 | Design tokens, components, the app shell (header, account menu, settings, dialogs), theme, language | `backplane-ui`                            |
+| Capabilities       | Sign-in, email, billing, audit trail, notifications, files, feature flags                           | `backplane-capabilities`                  |
+| First day          | A starter solution with all of the above wired in                                                   | `app-template`                            |
+| Knowledge          | These documents and the primers                                                                     | `backplane-standards`                     |
 
 ---
 

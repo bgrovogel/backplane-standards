@@ -157,11 +157,11 @@ Handy Roslyn queries: `DescendantNodes().OfType<ClassDeclarationSyntax>()`, `nod
 
 ## As a package
 
-Since 2026-11-04 the rules are a package, `Platform.Conventions` (roadmap task 1.3), so an application does not copy them. Each rule is a plain class that takes a `SourceSet` and returns violations; each has an abstract NUnit fixture
+Since 2026-11-04 the rules are a package, `Backplane.Conventions` (roadmap task 1.3), so an application does not copy them. Each rule is a plain class that takes a `SourceSet` and returns violations; each has an abstract NUnit fixture
 that an application inherits in one line (`public class Var : VarConventions { }`), with one `[assembly: Conventions]` attribute saying where the repository is. A setting that differs per application is a virtual property.
 The package was lifted out of `mortgage-analytics` and checked by running it on that application: every rule comes back clean and the methods past a size limit are exactly the ones its ratchet lists. Running
 the package's fixtures on the package's own code found real violations at once (a two-letter method name, three classes in one file, a method too complex), which were fixed.
-See [the package's README](../../src/Platform.Conventions/README.md).
+See [the package's README](../../src/Backplane.Conventions/README.md).
 
 ## Further reading
 

@@ -26,8 +26,8 @@ REQUIRED = {
         'Conventions.Tests',
         'gitleaks',
     ],
-    'full': ['-warnaserror', 'dotnet test Platform.sln'],
-    'release': ['gitleaks git --redact', 'dependency_report.py', 'mutation.py run Platform.Conventions'],
+    'full': ['-warnaserror', 'dotnet test Backplane.sln'],
+    'release': ['gitleaks git --redact', 'dependency_report.py', 'mutation.py run Backplane.Conventions'],
 }
 CI_GATES = [
     'npm run format:check',
@@ -36,8 +36,8 @@ CI_GATES = [
     'ruff check tools',
     'ruff format --check tools',
     'python -m unittest discover tools',
-    'dotnet build Platform.sln',
-    'dotnet test Platform.sln',
+    'dotnet build Backplane.sln',
+    'dotnet test Backplane.sln',
 ]
 
 
@@ -68,7 +68,7 @@ class TheCheckScript(unittest.TestCase):
     def test_every_path_it_names_exists(self):
         for step in steps():
             self.assertTrue((ROOT / step['dir']).is_dir(), f'{step["name"]}: the folder {step["dir"]} does not exist')
-            for path in re.findall(r'\b((?:tools|tests|src|scripts)/[\w./-]+|Platform\.sln)', step['cmd']):
+            for path in re.findall(r'\b((?:tools|tests|src|scripts)/[\w./-]+|Backplane\.sln)', step['cmd']):
                 self.assertTrue((ROOT / path.rstrip('/')).exists(), f'{step["name"]}: {path} does not exist')
 
     def test_a_missing_tool_is_reported_not_silently_skipped(self):

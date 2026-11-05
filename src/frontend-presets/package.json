@@ -1,5 +1,5 @@
 {
-  "name": "@platform/frontend-presets",
+  "name": "@backplane/frontend-presets",
   "version": "0.1.0",
   "private": true,
   "description": "The front-end standards of an Angular application as shared configuration: ESLint (with the layer rule), Prettier, stylelint and strict tsconfigs.",

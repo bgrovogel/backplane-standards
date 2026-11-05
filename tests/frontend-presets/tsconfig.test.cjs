@@ -3,10 +3,10 @@ const assert = require('node:assert/strict');
 const { execFileSync } = require('node:child_process');
 const fs = require('node:fs');
 const path = require('node:path');
-const base = require('@platform/frontend-presets/tsconfig.base.json');
+const base = require('@backplane/frontend-presets/tsconfig.base.json');
 const { makeProject, remove } = require('./helpers.cjs');
 
-const BASE_PATH = require.resolve('@platform/frontend-presets/tsconfig.base.json');
+const BASE_PATH = require.resolve('@backplane/frontend-presets/tsconfig.base.json');
 const TSC = require.resolve('typescript/bin/tsc');
 
 /** Compiles the text as src/sample.ts in a project that extends the preset; returns the error codes, e.g. ['TS7006']. */

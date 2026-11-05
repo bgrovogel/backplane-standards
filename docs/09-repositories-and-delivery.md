@@ -15,16 +15,16 @@
 
 ## Repositories
 
-Few repositories, each with a clear job. Names are placeholders until the [platform name](11-roadmap.md#open-decisions) is chosen.
+Few repositories, each with a clear job. The platform is named **Backplane** (chosen 2026-11-05, [open decision 1](11-roadmap.md#open-decisions)); the repositories not made yet take the same prefix when they are.
 
-| Repository              | Job                                           | Contains                                                                                                                                                   | Published as                                                                                                                  |
-| ----------------------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `platform-standards`    | The rulebook and the enforcement              | These documents, ADRs, build props, analyzers, `.editorconfig`, conventions tests, lint and format presets, Stryker base, reusable pipeline, check scripts | NuGet (`Brand.Standards.*`), npm (`@brand/eslint-config`, `@brand/prettier-config`, `@brand/tsconfig`), the reusable workflow |
-| `platform-kit`          | .NET libraries with no data and no deployment | Logging and redaction, request id, clock, idempotency, rate limiting, security headers, results, test support                                              | NuGet, one package per library                                                                                                |
-| `platform-ui`           | The design system and Angular libraries       | Tokens, components, app shell, i18n, theme, a component gallery with visual tests                                                                          | npm, one package per library                                                                                                  |
-| `platform-capabilities` | Capability modules                            | One folder per capability ([document 8](08-capability-modules.md#anatomy-of-a-capability))                                                                 | NuGet and npm per capability part                                                                                             |
-| `app-template`          | The starting copy of an application           | A solution wired to everything above                                                                                                                       | A `dotnet new` template package                                                                                               |
-| each application        | The product                                   | Its own domain, screens, configuration                                                                                                                     | Deployed, not published                                                                                                       |
+| Repository               | Job                                           | Contains                                                                                                                                                   | Published as                                                                                                                  |
+| ------------------------ | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `backplane-standards`    | The rulebook and the enforcement              | These documents, ADRs, build props, analyzers, `.editorconfig`, conventions tests, lint and format presets, Stryker base, reusable pipeline, check scripts | NuGet (`Brand.Standards.*`), npm (`@brand/eslint-config`, `@brand/prettier-config`, `@brand/tsconfig`), the reusable workflow |
+| `backplane-kit`          | .NET libraries with no data and no deployment | Logging and redaction, request id, clock, idempotency, rate limiting, security headers, results, test support                                              | NuGet, one package per library                                                                                                |
+| `backplane-ui`           | The design system and Angular libraries       | Tokens, components, app shell, i18n, theme, a component gallery with visual tests                                                                          | npm, one package per library                                                                                                  |
+| `backplane-capabilities` | Capability modules                            | One folder per capability ([document 8](08-capability-modules.md#anatomy-of-a-capability))                                                                 | NuGet and npm per capability part                                                                                             |
+| `app-template`           | The starting copy of an application           | A solution wired to everything above                                                                                                                       | A `dotnet new` template package                                                                                               |
+| each application         | The product                                   | Its own domain, screens, configuration                                                                                                                     | Deployed, not published                                                                                                       |
 
 `mortgage-analytics` stays its own repository and is the first adopter. `Hyvva`, the-hive, Veranda and buybright decide later whether to move onto the platform
 or stay as they are; nothing here forces a rewrite.
@@ -35,13 +35,13 @@ or stay as they are; nothing here forces a rewrite.
 
 A repository costs a pipeline, a README, a release routine and attention. Create one only when something needs to live in it.
 
-| Repository              | Created when                                                                                      | Before that                                 |
-| ----------------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------- |
-| `platform-standards`    | **First** (phase 1): the build props and conventions tests are lifted out of `mortgage-analytics` | These documents live in `C:\Dev\platform`   |
-| `app-template`          | Phase 1, right after: the proof that a new app starts with every gate on                          |                                             |
-| `platform-kit`          | Phase 2: the first library is extracted (logging and redaction, from two existing copies)         | Libraries stay in the app that has them     |
-| `platform-ui`           | Phase 3: the second app needs the shell and tokens                                                | The UI lives in `mortgage-analytics`        |
-| `platform-capabilities` | Phase 4: the second app needs login or email                                                      | The capability stays in the app that has it |
+| Repository               | Created when                                                                                      | Before that                                 |
+| ------------------------ | ------------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| `backplane-standards`    | **First** (phase 1): the build props and conventions tests are lifted out of `mortgage-analytics` | These documents live in `C:\Dev\platform`   |
+| `app-template`           | Phase 1, right after: the proof that a new app starts with every gate on                          |                                             |
+| `backplane-kit`          | Phase 2: the first library is extracted (logging and redaction, from two existing copies)         | Libraries stay in the app that has them     |
+| `backplane-ui`           | Phase 3: the second app needs the shell and tokens                                                | The UI lives in `mortgage-analytics`        |
+| `backplane-capabilities` | Phase 4: the second app needs login or email                                                      | The capability stays in the app that has it |
 
 **Monorepo inside each kit repository.** One repository holds many packages, so one pipeline, one history and one place to change a library and its
 users together. A package is versioned and published on its own.
@@ -51,7 +51,7 @@ users together. A package is versioned and published on its own.
 ## Inside a kit repository
 
 ```
-platform-kit/
+backplane-kit/
   README.md  MAP.md  CLAUDE.md          what it is, a generated map, the rules for agents working here
   Directory.Build.props  Directory.Packages.props  global.json  .editorconfig     inherited from standards
   src/
@@ -118,7 +118,7 @@ A change to a library should be tried in a real application **before** it is rel
 1. **Local feed.** Pack the library into a local folder and add that folder as the first NuGet source; the app restores the new version.
    `./scripts/release.ps1 -Local` does it with a version such as `1.5.0-local.3`.
 2. **Project reference override.** The application's `Directory.Build.props` has a switch: when `UseLocalKit=true` (set in a git-ignored
-   `Directory.Build.local.props`), selected `PackageReference`s become `ProjectReference`s to `C:\Dev\platform-kit\src\...`, so you debug into the library in one solution.
+   `Directory.Build.local.props`), selected `PackageReference`s become `ProjectReference`s to `C:\Dev\backplane-kit\src\...`, so you debug into the library in one solution.
 3. **npm.** Use `npm link`, or an npm workspace at the same level, for UI libraries.
 
 The rule that makes this safe: **never commit the override.** A check in tier 1 fails if `UseLocalKit` or a local feed path is staged.
@@ -152,10 +152,10 @@ run now draws on this allowance. The platform is designed to live inside it.
 | --------------------------------- | --------------------- | ------------ | --------------- | --------------------------------------------------- |
 | Application in active development | 60                    | 10           | 600             | Tier 2 only                                         |
 | A second application              | 30                    | 10           | 300             |                                                     |
-| `platform-standards`              | 20                    | 5            | 100             | Conventions tests and lint                          |
-| `platform-kit`                    | 20                    | 6            | 120             | Unit tests and mutation of changed packages locally |
-| `platform-ui`                     | 15                    | 8            | 120             | Component tests, gallery screenshots                |
-| `platform-capabilities`           | 20                    | 8            | 160             | CDK assertions and unit tests, no deploys           |
+| `backplane-standards`             | 20                    | 5            | 100             | Conventions tests and lint                          |
+| `backplane-kit`                   | 20                    | 6            | 120             | Unit tests and mutation of changed packages locally |
+| `backplane-ui`                    | 15                    | 8            | 120             | Component tests, gallery screenshots                |
+| `backplane-capabilities`          | 20                    | 8            | 160             | CDK assertions and unit tests, no deploys           |
 | Scheduled (all repos)             | 4 weeks               | 30           | 120             | Advisories, Lighthouse                              |
 | **Reserve**                       |                       |              | **about 480**   | Retries, a busy month                               |
 | **Total**                         |                       |              | **2,000**       |                                                     |
@@ -183,7 +183,7 @@ permissions:
   contents: read
 jobs:
   ci:
-    uses: bgrovogel/platform-standards/.github/workflows/dotnet-angular-ci.yml@main
+    uses: bgrovogel/backplane-standards/.github/workflows/dotnet-angular-ci.yml@main
     with:
       dotnet-solution: Acme.sln
       client-directory: client
@@ -203,7 +203,7 @@ The shared workflow is [`.github/workflows/dotnet-angular-ci.yml`](../.github/wo
 
 What holds it to the policy, and fails if it slips ([`tools/test_reusable_workflow.py`](../tools/test_reusable_workflow.py)): every third-party action is pinned to a commit with its version in a comment; the permissions are `contents: read` once, at the top, and no job widens them; no input is pasted into a shell (each goes through `env:`, so a value cannot become a command); no secret is used; every gate above is present; every input is described and has a default, except the solution. Whether the expressions and inputs are valid is a review rule, not a gate: run `actionlint` on the file when you change it (it is not a CI job, because of the minutes).
 
-**Calling a public repository's workflow from a private one.** `platform-standards` is public, and GitHub's documentation says a workflow in a public repository can be called from any repository. That is the answer to the first of the [open verifications](11-roadmap.md#open-verifications) for this repository, but it has **not** been tried by us: the first private application to call it confirms it. Pin the caller to a tag or a commit once releases exist; `@main` is for the first trial only.
+**Calling a public repository's workflow from a private one.** `backplane-standards` is public, and GitHub's documentation says a workflow in a public repository can be called from any repository. That is the answer to the first of the [open verifications](11-roadmap.md#open-verifications) for this repository, but it has **not** been tried by us: the first private application to call it confirms it. Pin the caller to a tag or a commit once releases exist; `@main` is for the first trial only.
 
 ---
 

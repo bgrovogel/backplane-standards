@@ -19,9 +19,9 @@ jobs:
         with:
           global-json-file: global.json
       # Warnings are errors, and the code style is checked by the build.
-      - run: dotnet build Platform.sln -c Release -warnaserror --nologo
+      - run: dotnet build Backplane.sln -c Release -warnaserror --nologo
       # The SDK's tests pack it and build real samples with it; the conventions tests hold this repository's own code to the rules it ships.
-      - run: dotnet test Platform.sln -c Release --no-build --nologo
+      - run: dotnet test Backplane.sln -c Release --no-build --nologo
 
   documents:
     name: Documents, board and tools

@@ -1,5 +1,5 @@
 {
-  "name": "platform-standards-repo",
+  "name": "backplane-standards-repo",
   "private": true,
   "description": "Formatting for every file in this repository: docs, JSON, XML project files, props, YAML, shell.",
   "workspaces": [

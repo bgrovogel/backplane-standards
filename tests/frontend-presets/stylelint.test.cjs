@@ -1,7 +1,7 @@
 const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
 const stylelint = require('stylelint');
-const config = require('@platform/frontend-presets/stylelint');
+const config = require('@backplane/frontend-presets/stylelint');
 
 /** The rules a style sheet broke. */
 async function problems(code) {

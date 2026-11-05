@@ -1,9 +1,9 @@
-# MSBuild SDKs (Platform.Sdk)
+# MSBuild SDKs (Backplane.Sdk)
 
 > An MSBuild SDK is a package of build rules that a project imports before anything else happens, even before packages are restored. It is how the platform gives every
 > application the same strict build, in one line, from one place.
 
-**Read time:** 10 min · **Version:** .NET SDK 10.0.100 or newer (`global.json`) · **Last verified:** 2026-11-04 against `src/Platform.Sdk` and its tests
+**Read time:** 10 min · **Version:** .NET SDK 10.0.100 or newer (`global.json`) · **Last verified:** 2026-11-04 against `src/Backplane.Sdk` and its tests
 
 **On this page:** [What it is](#what-it-is) · [Why we use it](#why-we-use-it) · [The big idea](#the-big-idea) · [How it works inside](#how-it-works-inside) ·
 [How it fits](#how-it-fits-with-everything-else) · [Example](#an-example-from-our-code) · [How to use it](#how-to-use-it) · [Rules](#the-rules-we-follow) ·
@@ -15,7 +15,7 @@
 
 Every `.csproj` starts from an **SDK**: `Microsoft.NET.Sdk` is the one that knows how to build a .NET library, `Microsoft.NET.Sdk.Web` adds web hosting. An SDK is two XML files, `Sdk.props`
 (read before the project's own body) and `Sdk.targets` (read after), shipped with the .NET tooling. An **MSBuild SDK package** is the same two files delivered as a NuGet package instead,
-so anyone can make one. `Platform.Sdk` is ours. It contains no code; it contains our build rules.
+so anyone can make one. `Backplane.Sdk` is ours. It contains no code; it contains our build rules.
 
 ## Why we use it
 
@@ -31,12 +31,12 @@ A rule change is then a version bump with a test behind it, not a copy-and-paste
 
 ## How it works inside
 
-1. The application's `global.json` names the SDK and its version: `"msbuild-sdks": { "Platform.Sdk": "1.2.0" }`.
+1. The application's `global.json` names the SDK and its version: `"msbuild-sdks": { "Backplane.Sdk": "1.2.0" }`.
 2. A project lists it **before** its normal SDK:
 
    ```xml
    <Project>
-     <Sdk Name="Platform.Sdk" />
+     <Sdk Name="Backplane.Sdk" />
      <Sdk Name="Microsoft.NET.Sdk" />
      ...
    </Project>
@@ -45,7 +45,7 @@ A rule change is then a version bump with a test behind it, not a copy-and-paste
 3. MSBuild asks NuGet for that package (from the sources in the application's `nuget.config`), unpacks it, and imports `Sdk/Sdk.props` first. That file sets the defaults:
    `net10.0`, nullable on, warnings as errors, `latest-recommended` analysis, code style enforced in the build, a lock file, an XML documentation file. Every one is written
    `Condition="'$(Name)' == ''"`, so a value set earlier (in an application's `Directory.Build.props`) stays, and the project's own body, which is read after, can always override.
-4. `Sdk/Platform.globalconfig` is added as a global analyzer config: the severities (`IDE0055`, `IDE0005`, `IDE0161`, `IDE0011` as warnings, therefore errors) and the style options.
+4. `Sdk/Backplane.globalconfig` is added as a global analyzer config: the severities (`IDE0055`, `IDE0005`, `IDE0161`, `IDE0011` as warnings, therefore errors) and the style options.
    An application's own `.editorconfig` is read after it and wins.
 5. A project whose name ends in `Tests` also gets `CS1591` switched off, because its method names are its documentation, `IsTestProject` on, and the **test stack**: NUnit, NSubstitute, their analyzers,
    coverage and the usings, with their versions. That part is in `Sdk.targets`, not `Sdk.props`, because it needs to know whether the application uses central package management, and a
@@ -64,7 +64,7 @@ and the build passed. This was found by a test that failed, which is why each ru
 
 ## An example from our code
 
-`tests/Platform.Sdk.Tests` makes a small solution in a temporary folder for each test, packs `src/Platform.Sdk` into a folder feed of its own under a version nobody has used, and builds the sample:
+`tests/Backplane.Sdk.Tests` makes a small solution in a temporary folder for each test, packs `src/Backplane.Sdk` into a folder feed of its own under a version nobody has used, and builds the sample:
 
 ```csharp
 BuildResult result = BuildLibrary("using System.Text;\n" + GoodCode);
@@ -81,14 +81,14 @@ A rule is proved by a sample that breaks it. If the rule stops applying, the sam
 2. In `nuget.config`: add the feed.
 3. In each `.csproj`: replace `<Project Sdk="Microsoft.NET.Sdk">` with the three lines above, and delete the settings the SDK now gives (`TargetFramework`, `Nullable`, ...).
 4. Copy the template's `.editorconfig` for the editor's sake.
-5. To change a rule: change `Sdk.props` or `Platform.globalconfig`, add or adjust the sample that proves it, run `dotnet test tests/Platform.Sdk.Tests`, bump the version.
+5. To change a rule: change `Sdk.props` or `Backplane.globalconfig`, add or adjust the sample that proves it, run `dotnet test tests/Backplane.Sdk.Tests`, bump the version.
 
 ## The rules we follow
 
 | Rule                                                                                | What catches a break                                     |
 | ----------------------------------------------------------------------------------- | -------------------------------------------------------- |
 | Every rule in `Sdk.props` is written to give way to an earlier value                | Review; a test that overrides one (`.editorconfig` wins) |
-| Every rule has a sample project that breaks it                                      | `tests/Platform.Sdk.Tests`                               |
+| Every rule has a sample project that breaks it                                      | `tests/Backplane.Sdk.Tests`                              |
 | The SDK holds no code, only settings                                                | Review                                                   |
 | A changed SDK is a new version; an application moves to it on purpose               | The version in `global.json`                             |
 | What an editor must read (`.editorconfig`) is copied by the template, not delivered | The template (task 1.10)                                 |
@@ -97,8 +97,8 @@ A rule is proved by a sample that breaks it. If the rule stops applying, the sam
 
 | Symptom                                                                     | Cause                                                                                                                                 | Fix                                                                      |
 | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| Warnings do not fail the build                                              | `Platform.Sdk` is listed after `Microsoft.NET.Sdk`                                                                                    | List it first                                                            |
-| `NU1101`/`The SDK 'Platform.Sdk' specified could not be found`              | The feed is not in `nuget.config`, or the version is wrong                                                                            | Check the source and the version in `global.json`                        |
+| Warnings do not fail the build                                              | `Backplane.Sdk` is listed after `Microsoft.NET.Sdk`                                                                                   | List it first                                                            |
+| `NU1101`/`The SDK 'Backplane.Sdk' specified could not be found`             | The feed is not in `nuget.config`, or the version is wrong                                                                            | Check the source and the version in `global.json`                        |
 | `NU1015` about the test packages                                            | An application's `Directory.Packages.props` sets `ManagePackageVersionsCentrally` false, or the file is missing in one project's tree | Let the SDK see the file (it is in the project's folder or above)        |
 | An `Update` of a package version in `Directory.Packages.props` does nothing | The SDK adds its versions after that file is read, so there is nothing to update yet                                                  | Use `Include` for the package                                            |
 | A change to the SDK is not seen                                             | The package of that version is cached                                                                                                 | Use a new version; tests give each run its own version and its own cache |

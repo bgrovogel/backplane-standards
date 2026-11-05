@@ -44,6 +44,6 @@ commit's message, so do not mention it in a message that needs CI. After a push,
 ## Conventions
 
 - This repository is public. Nothing private goes in it: no secret, no personal data, no account number.
-- The platform name and the package prefix `Platform` are placeholders until the owner chooses a name.
+- The platform is named **Backplane** (chosen 2026-11-05): packages are `Backplane.*` and `@backplane/*`, repositories `backplane-*`. The local folder keeps the name `platform`.
 - On Windows, scripts with backslashes or apostrophes go through the file tool, not a heredoc.
 - Commit messages say why, and end with the co-author line the tool supplies.

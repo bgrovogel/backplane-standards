@@ -3,9 +3,9 @@
 How we build every application from now on: one set of standards, one set of reusable capabilities, one starter, so a new
 application starts with every quality gate switched on and its common features already built.
 
-This folder is the **plan and the rulebook**, and since 2026-11-04 it is a git repository, public on GitHub as `bgrovogel/platform-standards`: the first
-repository of the plan ([document 9](docs/09-repositories-and-delivery.md#repositories); roadmap task 1.1). It keeps the folder name `platform` until the platform
-name is chosen. It holds no application code yet.
+This folder is the **plan and the rulebook**, and since 2026-11-04 it is a git repository, public on GitHub as `bgrovogel/backplane-standards`: the first
+repository of the plan ([document 9](docs/09-repositories-and-delivery.md#repositories); roadmap task 1.1). The platform is named **Backplane** (chosen 2026-11-05); the local folder keeps the
+name `platform`. It holds no application code yet.
 
 Status as of 2026-11-04: strategy written, and the standards applied to `mortgage-analytics` first, with no rewrites of other apps ([document 12](docs/12-mortgage-first.md)):
 every item of its work list is done except two that need the owner. Phase 1 of the [roadmap](docs/11-roadmap.md) (lifting those standards into packages and an app template)

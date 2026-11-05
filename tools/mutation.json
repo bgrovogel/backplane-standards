@@ -6,9 +6,9 @@
     "concurrency": 2
   },
   "projects": {
-    "Platform.Conventions": {
-      "tests": "tests/Platform.Conventions.Tests",
-      "project": "Platform.Conventions.csproj",
+    "Backplane.Conventions": {
+      "tests": "tests/Backplane.Conventions.Tests",
+      "project": "Backplane.Conventions.csproj",
       "thresholds": { "break": 95 }
     }
   }

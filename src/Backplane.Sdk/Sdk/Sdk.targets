@@ -1,0 +1,44 @@
+<Project>
+  <!--
+    The test stack, for every project whose name ends in Tests (DRY): NUnit, NSubstitute, their analyzers, coverage and the usings. A test project adds only what is specific to it.
+
+    This is in Sdk.targets, not Sdk.props, because it must know whether the application uses central package management, and that is only so once its Directory.Packages.props
+    has been imported, which happens after Sdk.props. With central management the versions below become PackageVersion items, unless the application has set that package's version
+    itself (an Include in its Directory.Packages.props moves it); without it they are written on the references.
+  -->
+  <ItemGroup>
+    <BackplanePackageVersion Include="coverlet.collector" Version="10.1.0" />
+    <BackplanePackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.11.0" />
+    <BackplanePackageVersion Include="NSubstitute" Version="6.2.0" />
+    <BackplanePackageVersion Include="NSubstitute.Analyzers.CSharp" Version="1.0.17" />
+    <BackplanePackageVersion Include="NUnit" Version="5.0.0" />
+    <BackplanePackageVersion Include="NUnit.Analyzers" Version="4.15.0" />
+    <BackplanePackageVersion Include="NUnit3TestAdapter" Version="6.3.1" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <_BackplaneCentralVersions
+            Condition="'$(ManagePackageVersionsCentrally)' == 'true' and '$(CentralPackageVersionsFileImported)' == 'true'"
+        >true</_BackplaneCentralVersions>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(_BackplaneCentralVersions)' == 'true'">
+    <PackageVersion Include="@(BackplanePackageVersion)" Exclude="@(PackageVersion)" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(MSBuildProjectName.EndsWith('Tests'))">
+    <PackageReference Include="coverlet.collector" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="NUnit.Analyzers" PrivateAssets="all" />
+    <PackageReference Include="NSubstitute" />
+    <PackageReference Include="NSubstitute.Analyzers.CSharp" PrivateAssets="all" />
+    <Using Include="NUnit.Framework" />
+    <Using Include="NSubstitute" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(MSBuildProjectName.EndsWith('Tests')) and '$(_BackplaneCentralVersions)' != 'true'">
+    <PackageReference Update="@(BackplanePackageVersion)" Version="%(BackplanePackageVersion.Version)" />
+  </ItemGroup>
+</Project>

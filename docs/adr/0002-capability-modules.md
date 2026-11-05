@@ -10,7 +10,7 @@ leaves each app to build the infrastructure and operations; a service alone leav
 ## Decision
 
 We will deliver each reusable feature as a **capability module**: an infrastructure construct, the service code, a typed client generated from an OpenAPI contract, optional UI pieces, a `Testing` package of fakes, and its documentation, threat model, SLO and
-runbooks, versioned together with semantic versioning. A capability owns its data; applications use the client or its events. Libraries with no data or deployment (logging, clock, redaction) are `platform-kit` libraries, not capabilities.
+runbooks, versioned together with semantic versioning. A capability owns its data; applications use the client or its events. Libraries with no data or deployment (logging, clock, redaction) are `backplane-kit` libraries, not capabilities.
 A capability is extracted only when a second application needs it.
 
 ## Alternatives considered

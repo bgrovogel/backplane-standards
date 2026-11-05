@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    The conventions tests as a package (roadmap task 1.3): the rules that read an application's source with Roslyn and fail the build when a written standard is broken.
+    An application's conventions project references this package and writes one line per rule (a class that inherits the rule's fixture), plus one assembly attribute that says
+    where its source is. Each rule is a plain class that finds violations in a set of files, so it is proved here on a sample that breaks it.
+  -->
+  <PropertyGroup>
+    <PackageId>Backplane.Conventions</PackageId>
+    <Description
+        >Roslyn-based conventions tests: naming, var, file layout, suppressions, assertion messages, money types, logging, signposts and complexity ceilings.</Description>
+    <IsPackable>true</IsPackable>
+    <!-- It references NUnit (the rules are NUnit fixtures), which makes Stryker take it for a test project and refuse to mutate it; it is not one. -->
+    <IsTestProject>false</IsTestProject>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+    <PackageReference Include="NUnit" />
+    <Using Include="NUnit.Framework" />
+  </ItemGroup>
+</Project>

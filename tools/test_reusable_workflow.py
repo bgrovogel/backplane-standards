@@ -169,7 +169,7 @@ class TheCallerShownInTheDocumentation(unittest.TestCase):
         block, _ = self.example()
         self.assertRegex(
             block,
-            r'uses: [\w./-]+/platform-standards/\.github/workflows/dotnet-angular-ci\.yml@\S+',
+            r'uses: [\w./-]+/backplane-standards/\.github/workflows/dotnet-angular-ci\.yml@\S+',
             'it names the file in .github/workflows',
         )
 

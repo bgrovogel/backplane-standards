@@ -1,9 +1,9 @@
 """Runs mutation testing (Stryker.NET) for chosen projects and records the score.
 
     python tools/mutation.py list                              the projects that can be mutated
-    python tools/mutation.py run Platform.Conventions          run Stryker on it, from its test project, and print the score
-    python tools/mutation.py run Platform.Conventions --record  ...and record the score in docs/mutation-scores.md (a clean working tree only)
-    python tools/mutation.py score Platform.Conventions        score the latest run without running again
+    python tools/mutation.py run Backplane.Conventions          run Stryker on it, from its test project, and print the score
+    python tools/mutation.py run Backplane.Conventions --record  ...and record the score in docs/mutation-scores.md (a clean working tree only)
+    python tools/mutation.py score Backplane.Conventions        score the latest run without running again
 
 Every project starts from the shared base in `tools/mutation.json` (reporters, target framework, thresholds, concurrency) and says only what is its own: the
 project file, the tests that cover it, and a threshold it raises. The thresholds are the gate (G-22): Stryker exits non-zero below `break`. A run takes minutes,

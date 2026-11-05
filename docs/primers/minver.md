@@ -59,7 +59,7 @@ Options (MSBuild properties, set in a project or `Directory.Build.props`):
 
 ## An example from our code
 
-This repository does not use MinVer yet; `Platform.Sdk` and `Platform.Conventions` are built and tested but not published (board task 17). When they are, this **sketch** goes in `Directory.Build.props`, written from the README and not yet run:
+This repository does not use MinVer yet; `Backplane.Sdk` and `Backplane.Conventions` are built and tested but not published (board task 17). When they are, this **sketch** goes in `Directory.Build.props`, written from the README and not yet run:
 
 ```xml
 <ItemGroup>

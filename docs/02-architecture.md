@@ -255,23 +255,23 @@ The rules:
 At the largest scale the same rule applies: reusable, stable things in the middle; applications on the outside depending on them.
 
 ```
-   applications  (one repository each)  --->  platform-capabilities  (login, email, billing, ...)
+   applications  (one repository each)  --->  backplane-capabilities  (login, email, billing, ...)
         |                                          |
         |                                          v
-        +----------------------------------->  platform-kit (.NET libraries)   platform-ui (Angular libraries)
+        +----------------------------------->  backplane-kit (.NET libraries)   backplane-ui (Angular libraries)
         |                                          |
         v                                          v
-   app-template  (the starting copy)  ------>  platform-standards  (rules, conventions tests, pipeline, docs)
+   app-template  (the starting copy)  ------>  backplane-standards  (rules, conventions tests, pipeline, docs)
 ```
 
-| Repository              | Holds                                                                                                                                 | Depends on                       |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
-| `platform-standards`    | Build props, analyzers, `.editorconfig`, conventions tests, lint and format presets, Stryker base, reusable pipeline, these documents | nothing                          |
-| `platform-kit`          | .NET libraries: logging and redaction, request ids, clock, idempotency, rate limiting, security headers, results, test support        | standards                        |
-| `platform-ui`           | Angular libraries: design tokens, components, app shell, i18n, theme                                                                  | standards                        |
-| `platform-capabilities` | Capability modules: infrastructure, service, client and UI pieces per feature                                                         | kit, ui, standards               |
-| `app-template`          | A starter solution wired to all of the above                                                                                          | all of the above (it is a copy)  |
-| each application        | Its own domain, screens and configuration                                                                                             | capabilities, kit, ui, standards |
+| Repository               | Holds                                                                                                                                 | Depends on                       |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| `backplane-standards`    | Build props, analyzers, `.editorconfig`, conventions tests, lint and format presets, Stryker base, reusable pipeline, these documents | nothing                          |
+| `backplane-kit`          | .NET libraries: logging and redaction, request ids, clock, idempotency, rate limiting, security headers, results, test support        | standards                        |
+| `backplane-ui`           | Angular libraries: design tokens, components, app shell, i18n, theme                                                                  | standards                        |
+| `backplane-capabilities` | Capability modules: infrastructure, service, client and UI pieces per feature                                                         | kit, ui, standards               |
+| `app-template`           | A starter solution wired to all of the above                                                                                          | all of the above (it is a copy)  |
+| each application         | Its own domain, screens and configuration                                                                                             | capabilities, kit, ui, standards |
 
 A repository is created when something needs to live in it, not before ([document 9](09-repositories-and-delivery.md)). The
 layout inside a capability is in [document 8](08-capability-modules.md#anatomy-of-a-capability).

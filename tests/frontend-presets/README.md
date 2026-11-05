@@ -12,5 +12,5 @@ Proves the [front-end presets](../../src/frontend-presets/README.md) the way the
 | `acceptance.test.cjs`    | The presets run on a real application and find nothing, after counting enough files that an empty folder could not pass                                                            |
 | `helpers.cjs`            | A throwaway Angular-shaped project and a function that lints text as if it sat in a file                                                                                           |
 
-**Run them:** `npm run test:frontend` from the repository root. The acceptance tests are skipped, loudly, unless `PLATFORM_ACCEPTANCE_REPO` names the application's folder (the one that holds `client/`), because CI has no such application.
+**Run them:** `npm run test:frontend` from the repository root. The acceptance tests are skipped, loudly, unless `BACKPLANE_ACCEPTANCE_REPO` names the application's folder (the one that holds `client/`), because CI has no such application.
 **What does not live here:** the presets (in `src/`). **Who may depend on it:** nothing.

@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    An MSBuild SDK package (ADR 0012): no code, only the files an application's projects import before restore. It is packed with the MSBuildSdk package type, so
+    `msbuild-sdks` in an application's global.json can name it, and `<Sdk Name="Backplane.Sdk" />` in a project brings in Sdk/Sdk.props and Sdk/Sdk.targets.
+  -->
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>Backplane.Sdk</PackageId>
+    <Description
+        >The build rules every application starts with: strict compiler settings, code style enforced in the build, documented public API, locked packages.</Description>
+    <PackageType>MSBuildSdk</PackageType>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <DevelopmentDependency>true</DevelopmentDependency>
+    <NoPackageAnalysis>true</NoPackageAnalysis>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="Sdk/**" Pack="true" PackagePath="Sdk/" />
+  </ItemGroup>
+</Project>

@@ -194,7 +194,7 @@ Tightening a gate, or adding a new one, needs no ADR: do it, and update this pag
 
 ## One command per tier
 
-Every repository exposes the same entry points so nobody has to remember which tool to run (**exists**: `scripts/check.ps1` in `platform-standards` and in `mortgage-analytics`; a small script in the template; a test holds its steps to the repository, and to CI):
+Every repository exposes the same entry points so nobody has to remember which tool to run (**exists**: `scripts/check.ps1` in `backplane-standards` and in `mortgage-analytics`; a small script in the template; a test holds its steps to the repository, and to CI):
 
 | Command           | Runs                                                                                        |
 | ----------------- | ------------------------------------------------------------------------------------------- |

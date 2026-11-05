@@ -1,5 +1,5 @@
 <Project>
-  <!-- The settings of this repository's own projects. They are the same rules Platform.Sdk gives an application; the SDK cannot be used to build itself. -->
+  <!-- The settings of this repository's own projects. They are the same rules Backplane.Sdk gives an application; the SDK cannot be used to build itself. -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <LangVersion>latest</LangVersion>

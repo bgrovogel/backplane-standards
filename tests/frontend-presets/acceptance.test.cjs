@@ -7,17 +7,17 @@ const path = require('node:path');
 const { ESLint } = require('eslint');
 const prettier = require('prettier');
 const stylelint = require('stylelint');
-const { createEslintConfig } = require('@platform/frontend-presets/eslint');
-const PRETTIER_CONFIG = require.resolve('@platform/frontend-presets/prettier');
-const stylelintConfig = require('@platform/frontend-presets/stylelint');
+const { createEslintConfig } = require('@backplane/frontend-presets/eslint');
+const PRETTIER_CONFIG = require.resolve('@backplane/frontend-presets/prettier');
+const stylelintConfig = require('@backplane/frontend-presets/stylelint');
 
 /**
- * The preset run on a real application. Set PLATFORM_ACCEPTANCE_REPO to the application's folder (the one that holds client/); without it these are
+ * The preset run on a real application. Set BACKPLANE_ACCEPTANCE_REPO to the application's folder (the one that holds client/); without it these are
  * skipped, loudly, because CI has no such application. Each check also counts what it looked at, so a run over an empty folder cannot pass.
  */
-const REPO = process.env.PLATFORM_ACCEPTANCE_REPO;
+const REPO = process.env.BACKPLANE_ACCEPTANCE_REPO;
 const CLIENT = REPO ? path.join(REPO, 'client') : '';
-const skip = REPO ? false : 'PLATFORM_ACCEPTANCE_REPO is not set: the presets were not run on a real application';
+const skip = REPO ? false : 'BACKPLANE_ACCEPTANCE_REPO is not set: the presets were not run on a real application';
 
 const FEATURES_ALLOWED_TO_CROSS = ['src/app/features/history/history-page.component.spec.ts'];
 
@@ -88,7 +88,7 @@ describe('the presets on a real application', { skip }, () => {
         fs.writeFileSync(
             file,
             JSON.stringify({
-                extends: require.resolve('@platform/frontend-presets/tsconfig.base.json'),
+                extends: require.resolve('@backplane/frontend-presets/tsconfig.base.json'),
                 compilerOptions: { noEmit: true, module: 'CommonJS', types: ['jest', 'node'], typeRoots: [`${slashed}/node_modules/@types`] },
                 include: [`${slashed}/src/**/*.ts`, `${slashed}/setup-jest.ts`],
             }),

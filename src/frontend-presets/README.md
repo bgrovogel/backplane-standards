@@ -1,6 +1,6 @@
 # frontend-presets
 
-The front-end standards of an Angular application as shared configuration (roadmap task 1.5): one ESLint function, one Prettier configuration, one stylelint configuration and one strict `tsconfig`. An application imports them in a line each and holds no copy to drift. The package is `@platform/frontend-presets`; the name is a placeholder until the owner chooses one, and it is not yet published (roadmap task 17).
+The front-end standards of an Angular application as shared configuration (roadmap task 1.5): one ESLint function, one Prettier configuration, one stylelint configuration and one strict `tsconfig`. An application imports them in a line each and holds no copy to drift. The package is `@backplane/frontend-presets`; it is not yet published (roadmap task 17).
 
 | File                 | What it gives                                                                                                                                                                                                         | What an application sets                                                                             |
 | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
@@ -15,19 +15,19 @@ An application's files:
 
 ```js
 // eslint.config.js
-const { createEslintConfig } = require('@platform/frontend-presets/eslint');
+const { createEslintConfig } = require('@backplane/frontend-presets/eslint');
 module.exports = createEslintConfig({ root: __dirname });
 
 // prettier.config.cjs
-module.exports = require('@platform/frontend-presets/prettier');
+module.exports = require('@backplane/frontend-presets/prettier');
 
 // stylelint.config.cjs
-module.exports = require('@platform/frontend-presets/stylelint');
+module.exports = require('@backplane/frontend-presets/stylelint');
 ```
 
 ```json
-{ "extends": "@platform/frontend-presets/tsconfig.base.json", "compilerOptions": { "outDir": "./dist/out-tsc" } }
+{ "extends": "@backplane/frontend-presets/tsconfig.base.json", "compilerOptions": { "outDir": "./dist/out-tsc" } }
 ```
 
-**What does not live here:** the checks that read the client's files as text (a suppression needs its reason, a Playwright `expect` needs a message), which are rules in [`Platform.Conventions`](../Platform.Conventions/README.md), and an application's own rules. **Who may depend on it:** an application's client, as a package version, never by path.
+**What does not live here:** the checks that read the client's files as text (a suppression needs its reason, a Playwright `expect` needs a message), which are rules in [`Backplane.Conventions`](../Backplane.Conventions/README.md), and an application's own rules. **Who may depend on it:** an application's client, as a package version, never by path.
 **Tests:** [`tests/frontend-presets`](../../tests/frontend-presets/README.md). **Read more:** [ESLint, Prettier and stylelint](../../docs/primers/eslint-prettier-stylelint.md), [Quality gates, G-05, G-06, G-10](../../docs/03-quality-gates.md).

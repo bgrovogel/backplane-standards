@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const prettier = require('prettier');
-const config = require('@platform/frontend-presets/prettier');
+const config = require('@backplane/frontend-presets/prettier');
 
 // Prettier applies a configuration's per-file overrides only when it finds the configuration itself, so the preset is used the way an application
 // uses it: a prettier.config.cjs that hands it on.
@@ -13,7 +13,7 @@ before(() => {
     folder = fs.mkdtempSync(path.join(os.tmpdir(), 'prettier-preset-'));
     fs.writeFileSync(
         path.join(folder, 'prettier.config.cjs'),
-        `module.exports = require(${JSON.stringify(require.resolve('@platform/frontend-presets/prettier'))});
+        `module.exports = require(${JSON.stringify(require.resolve('@backplane/frontend-presets/prettier'))});
 `,
     );
 });

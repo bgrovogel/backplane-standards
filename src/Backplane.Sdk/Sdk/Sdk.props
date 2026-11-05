@@ -1,0 +1,38 @@
+<Project>
+  <!--
+    The build rules every application starts with. This file is read before restore, which is why these live in an SDK and not in a NuGet package's build/*.props
+    (ADR 0012): a package's props cannot set TargetFramework. An application can still set any of these in its own project.
+
+    A project lists this SDK BEFORE the one it builds with (`<Sdk Name="Backplane.Sdk" />`, then `<Sdk Name="Microsoft.NET.Sdk" />`). The order matters: Microsoft.NET.Sdk
+    sets TreatWarningsAsErrors to false unless something has already set it, so these defaults must be in place first.
+  -->
+  <PropertyGroup>
+    <TargetFramework Condition="'$(TargetFramework)' == '' and '$(TargetFrameworks)' == ''">net10.0</TargetFramework>
+    <LangVersion Condition="'$(LangVersion)' == ''">latest</LangVersion>
+    <Nullable Condition="'$(Nullable)' == ''">enable</Nullable>
+    <ImplicitUsings Condition="'$(ImplicitUsings)' == ''">enable</ImplicitUsings>
+    <TreatWarningsAsErrors Condition="'$(TreatWarningsAsErrors)' == ''">true</TreatWarningsAsErrors>
+    <AnalysisLevel Condition="'$(AnalysisLevel)' == ''">latest-recommended</AnalysisLevel>
+    <!-- The code style in the .editorconfig and in Backplane.globalconfig is checked by the build too, so formatting and unused usings fail it like any warning. -->
+    <EnforceCodeStyleInBuild Condition="'$(EnforceCodeStyleInBuild)' == ''">true</EnforceCodeStyleInBuild>
+    <!-- packages.lock.json pins every package, transitive ones included; CI and Docker restore in locked mode. -->
+    <RestorePackagesWithLockFile Condition="'$(RestorePackagesWithLockFile)' == ''">true</RestorePackagesWithLockFile>
+    <!-- The documentation file feeds the API docs and IntelliSense, and the unused-usings check (IDE0005) needs it on build. -->
+    <GenerateDocumentationFile Condition="'$(GenerateDocumentationFile)' == ''">true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <!-- Production code documents its public surface: a missing summary (CS1591) fails the build. Test projects are exempt, because their method names are the documentation. -->
+  <PropertyGroup Condition="$(MSBuildProjectName.EndsWith('Tests'))">
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(MSBuildProjectName.EndsWith('Tests'))">
+    <IsPackable Condition="'$(IsPackable)' == ''">false</IsPackable>
+    <IsTestProject Condition="'$(IsTestProject)' == ''">true</IsTestProject>
+  </PropertyGroup>
+
+  <!-- Analyzer severities and the style options the build enforces. An application's own .editorconfig is read after this and wins. -->
+  <ItemGroup>
+    <GlobalAnalyzerConfigFiles Include="$(MSBuildThisFileDirectory)Backplane.globalconfig" />
+  </ItemGroup>
+</Project>

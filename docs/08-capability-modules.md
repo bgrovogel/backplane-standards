@@ -19,12 +19,12 @@
 
 A **capability** is one business-agnostic feature that several applications need, delivered as one versioned unit with four parts:
 
-| Part                         | What it is                                                                                     | Packaged as                                               |
-| ---------------------------- | ---------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
-| **Infrastructure construct** | AWS CDK code that creates everything it needs (functions, queues, tables, permissions, alarms) | A NuGet package (C#, `Amazon.CDK.Lib`)                    |
-| **Service**                  | The code that runs: Lambda handlers using the Clean Architecture layers                        | A prebuilt, versioned deployment artifact (see below)     |
-| **Typed client**             | What an application calls (`email.SendAsync(...)`); generated from the contract                | A NuGet package                                           |
-| **UI pieces** (optional)     | Angular components and routes the feature needs (a sign-in form, a preferences panel)          | An npm package in `platform-ui` or the capability's `ui/` |
+| Part                         | What it is                                                                                     | Packaged as                                                |
+| ---------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| **Infrastructure construct** | AWS CDK code that creates everything it needs (functions, queues, tables, permissions, alarms) | A NuGet package (C#, `Amazon.CDK.Lib`)                     |
+| **Service**                  | The code that runs: Lambda handlers using the Clean Architecture layers                        | A prebuilt, versioned deployment artifact (see below)      |
+| **Typed client**             | What an application calls (`email.SendAsync(...)`); generated from the contract                | A NuGet package                                            |
+| **UI pieces** (optional)     | Angular components and routes the feature needs (a sign-in form, a preferences panel)          | An npm package in `backplane-ui` or the capability's `ui/` |
 
 A capability **owns its own data**. No application reads its tables; applications use the client, or subscribe to its events.
 
@@ -35,7 +35,7 @@ deploys its own copy, [strategy](00-strategy.md#one-shared-copy-or-one-copy-per-
 
 ## Anatomy of a capability
 
-One folder per capability inside the `platform-capabilities` repository. The names below use `email` as the example.
+One folder per capability inside the `backplane-capabilities` repository. The names below use `email` as the example.
 
 ```
 capabilities/email/
@@ -229,7 +229,7 @@ until a second application needs it ([strategy](00-strategy.md#what-we-do-not-do
 | **Mortgage calculation** (a real shared service) | The loan, refinance and strategy maths behind an OpenAPI contract                    | `mortgage-analytics` Domain and Application                                                      | buybright's duplicate math retires into it; the one place a shared running service is natural |
 
 Cross-cutting **libraries** (logging, redaction, request id, clock, rate limiting, security headers, results, test support) are in
-`platform-kit`, not capabilities: they have no data and no deployment.
+`backplane-kit`, not capabilities: they have no data and no deployment.
 
 ---
 

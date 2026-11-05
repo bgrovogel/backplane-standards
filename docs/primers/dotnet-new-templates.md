@@ -35,30 +35,30 @@ Alternatives: a GitHub "template repository" (copies the files but cannot rename
 
 ```
    app-template/                       dotnet new install ./app-template
-     .template.config/template.json    dotnet new platform-app -n Acme.Orders
+     .template.config/template.json    dotnet new backplane-app -n Acme.Orders
      src/MyApp.Api/...         --->    Acme.Orders/
      tests/MyApp.Api.Tests/...           src/Acme.Orders.Api/...   (every "MyApp" replaced)
 ```
 
 ## How it fits with everything else
 
-- The template carries the platform: it references `Platform.Sdk` (the build rules), has a conventions project using `Platform.Conventions` ([MSBuild SDKs](msbuild-sdks.md), [Roslyn conventions tests](roslyn-conventions-tests.md)), the `doc-checks.json` and `scripts/check.ps1`, and a `docs/start-here.md`.
+- The template carries the platform: it references `Backplane.Sdk` (the build rules), has a conventions project using `Backplane.Conventions` ([MSBuild SDKs](msbuild-sdks.md), [Roslyn conventions tests](roslyn-conventions-tests.md)), the `doc-checks.json` and `scripts/check.ps1`, and a `docs/start-here.md`.
 - It is **tested by using it**: a test (or a CI job) creates an application from the template and runs `check full` on it. A template that was never created from is broken the first time someone does.
 - It is published as a NuGet package from the platform's feed and versioned with [MinVer](minver.md).
 - The infrastructure folder of a new application is described in [AWS CDK in C#](aws-cdk-in-csharp.md).
 
 ## An example from our code
 
-No template exists yet, so this is a **sketch** of the `template.json` of the app-template, built from the fields in Microsoft's documentation. Names are placeholders (the platform's name is an open decision, board task 16):
+No template exists yet, so this is a **sketch** of the `template.json` of the app-template, built from the fields in Microsoft's documentation. Names use the platform's prefix, Backplane (board task 16):
 
 ```json
 {
   "$schema": "https://json.schemastore.org/template",
   "author": "Platform",
   "classifications": ["Web", "API", "Angular"],
-  "identity": "Platform.AppTemplate.CSharp",
+  "identity": "Backplane.AppTemplate.CSharp",
   "name": "Platform application",
-  "shortName": "platform-app",
+  "shortName": "backplane-app",
   "sourceName": "MyApp",
   "preferNameDirectory": true,
   "tags": { "language": "C#", "type": "solution" },
@@ -83,8 +83,8 @@ No template exists yet, so this is a **sketch** of the `template.json` of the ap
 ```text
 dotnet new install ./app-template/            # try a template straight from its folder
 dotnet new list                               # see it, with its short name and tags
-dotnet new platform-app -n Acme.Orders -?     # the options it takes (-? after the short name)
-dotnet new platform-app -n Acme.Orders        # create it
+dotnet new backplane-app -n Acme.Orders -?     # the options it takes (-? after the short name)
+dotnet new backplane-app -n Acme.Orders        # create it
 dotnet new uninstall ./app-template/          # remove it again
 ```
 

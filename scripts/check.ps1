@@ -7,7 +7,7 @@
              style, the convention tests, and a secret scan of what is staged. A minute or two.
     full     Everything CI runs, so CI confirms what you already know: the fast checks, then a warnings-as-errors build and every .NET
              test (the SDK's tests pack it and build real samples, so this is the slow part).
-    release  Before a release or a big change: the full checks, then mutation testing of Platform.Conventions (tools/mutation.py), the
+    release  Before a release or a big change: the full checks, then mutation testing of Backplane.Conventions (tools/mutation.py), the
              dependency report (a known vulnerability fails; a newer version is only listed) and a secret scan of the whole history.
 
     Every step runs even after one fails, then a summary lists each step as PASSED, FAILED or SKIPPED. A step is SKIPPED, loudly, when
@@ -40,13 +40,13 @@ $Steps = @(
     @{ Tier = 'fast'; Name = 'Python tool tests'; Dir = '.'; Cmd = 'python -m unittest discover tools' },
     @{ Tier = 'fast'; Name = 'Python lint'; Dir = '.'; Cmd = 'ruff check tools'; Needs = 'ruff' },
     @{ Tier = 'fast'; Name = 'Python format'; Dir = '.'; Cmd = 'ruff format --check tools'; Needs = 'ruff' },
-    @{ Tier = 'fast'; Name = 'Convention tests'; Dir = '.'; Cmd = 'dotnet test tests/Platform.Conventions.Tests --nologo -v q' },
+    @{ Tier = 'fast'; Name = 'Convention tests'; Dir = '.'; Cmd = 'dotnet test tests/Backplane.Conventions.Tests --nologo -v q' },
     @{ Tier = 'fast'; Name = 'Secret scan, staged changes'; Dir = '.'; Cmd = 'gitleaks git --staged --redact --no-banner'; Needs = 'gitleaks' },
 
-    @{ Tier = 'full'; Name = 'Build, warnings as errors'; Dir = '.'; Cmd = 'dotnet build Platform.sln -c Release -warnaserror --nologo -v q' },
-    @{ Tier = 'full'; Name = '.NET tests'; Dir = '.'; Cmd = 'dotnet test Platform.sln -c Release --no-build --nologo' },
+    @{ Tier = 'full'; Name = 'Build, warnings as errors'; Dir = '.'; Cmd = 'dotnet build Backplane.sln -c Release -warnaserror --nologo -v q' },
+    @{ Tier = 'full'; Name = '.NET tests'; Dir = '.'; Cmd = 'dotnet test Backplane.sln -c Release --no-build --nologo' },
 
-    @{ Tier = 'release'; Name = 'Mutation, Platform.Conventions'; Dir = '.'; Cmd = 'python tools/mutation.py run Platform.Conventions' },
+    @{ Tier = 'release'; Name = 'Mutation, Backplane.Conventions'; Dir = '.'; Cmd = 'python tools/mutation.py run Backplane.Conventions' },
     @{ Tier = 'release'; Name = 'Dependency report'; Dir = '.'; Cmd = 'python tools/dependency_report.py' },
     @{ Tier = 'release'; Name = 'Secret scan, whole history'; Dir = '.'; Cmd = 'gitleaks git --redact --no-banner'; Needs = 'gitleaks' }
 )
