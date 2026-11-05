@@ -24,7 +24,7 @@ jobs:
       - run: dotnet test Platform.sln -c Release --no-build --nologo
 
   documents:
-    name: Documents are formatted and linked
+    name: Documents, board and tools
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -35,3 +35,7 @@ jobs:
       - run: npm ci
       - run: npm run format:check
       - run: python3 tools/check_links.py
+      # The Python tools are linted and formatted with ruff (ruff.toml); their tests include the work board, which must be valid.
+      - run: pipx run --spec ruff==0.14.0 ruff check tools
+      - run: pipx run --spec ruff==0.14.0 ruff format --check tools
+      - run: python3 -m unittest discover tools

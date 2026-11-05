@@ -11,6 +11,8 @@ Status as of 2026-11-04: strategy written, and the standards applied to `mortgag
 every item of its work list is done except two that need the owner. Phase 1 of the [roadmap](docs/11-roadmap.md) (lifting those standards into packages and an app template)
 is next. Nothing is extracted yet.
 
+**What to do next:** the [work board](docs/work-board.md). `python tools/board.py next` names the task; `--unattended` names one that needs no owner.
+
 ## Read in this order
 
 | #   | Document                                                          | Read it to learn                                                                                           |

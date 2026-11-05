@@ -5,8 +5,24 @@ Read by every Claude Code session in this repository. It says how to find work a
 
 ## Finding work
 
-The plan is the roadmap in [docs/11-roadmap.md](docs/11-roadmap.md), phase by phase, and the work list for the first application in [docs/12-mortgage-first.md](docs/12-mortgage-first.md).
-Work the first task whose dependencies are done, and no other. If the owner gives a different instruction, do that.
+The plan is the table in [docs/work-board.md](docs/work-board.md): the roadmap's tasks in order, each with who may do it. At the start of a session, and after finishing a task:
+
+```text
+python tools/board.py next               # with the owner here
+python tools/board.py next --unattended  # owner away: only tasks marked auto
+```
+
+Work that task and no other. If the owner gives a different instruction, do that and leave the board alone. The roadmap ([docs/11-roadmap.md](docs/11-roadmap.md)) says why each task exists.
+
+## Working alone (the owner is away)
+
+A scheduled or looping session takes only `--unattended` tasks, at most three in one session, one at a time. For each one:
+
+1. Set its Status to `doing` (the board allows one at a time) in the same commit as the work.
+2. Write the failing test first, make it pass, then run the checks (`dotnet test`, `npm run format:check`, `python tools/check_links.py`, `python -m unittest discover tools`, `python tools/board.py check`).
+3. Commit locally with a message that says why. A commit cannot name its own hash, so record it afterwards in a second, board-only commit marked with the skip marker: Status `done`, Result the hash of the first.
+4. **Stop and mark the task `blocked` (with the reason in Result) instead of pushing on** if a check fails and the cause is not clear in a few tries, the task needs a decision, or it touches `ask` or `owner` work.
+5. End by listing what was done and what is blocked.
 
 ## Doing it
 
@@ -18,14 +34,11 @@ Work the first task whose dependencies are done, and no other. If the owner give
 6. **Portable Markdown only** (tables, headings, quotes, fenced code, text diagrams): no Mermaid, no GitHub-only alerts, no math blocks. Format with the shared Prettier configuration before committing.
 7. **Update the facts that depend on a change** (counts, links, the README table, the ADR index) in the same commit.
 
-## Working alone (the owner is away)
-
-Never, unattended: push, create or change a CI workflow, publish a package, delete or loosen a rule, force or amend anything already committed, or stage files you did not change.
-Stop and write down what is blocked instead of pushing on if a check fails and the cause is not clear in a few tries, or a decision is needed.
+Never, unattended: push, create or change a CI workflow, publish a package, delete or loosen a rule or a gate's threshold, delete a test, force or amend anything already committed, or stage files you did not change.
 
 ## Pushing
 
-With the owner in the session, push finished work and report how CI ended. CI minutes are limited: documentation-only commits carry the skip marker, and code commits never do. The marker is read anywhere in the head
+With the owner in the session, push finished work and report how CI ended. This repository is public, so CI is free; the habit stays: a documentation-only commit may carry the skip marker, and a code commit never does. The marker is read anywhere in the head
 commit's message, so do not mention it in a message that needs CI. After a push, `gh run list`.
 
 ## Conventions

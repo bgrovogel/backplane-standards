@@ -1,0 +1,6 @@
+# The Python tools under tools/: linted and formatted with ruff, checked in CI's documents job.
+line-length = 140
+target-version = 'py312'
+
+[format]
+quote-style = 'single'
