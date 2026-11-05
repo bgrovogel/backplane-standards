@@ -9,6 +9,8 @@
     <Description
         >Roslyn-based conventions tests: naming, var, file layout, suppressions, assertion messages, money types, logging, signposts and complexity ceilings.</Description>
     <IsPackable>true</IsPackable>
+    <!-- It references NUnit (the rules are NUnit fixtures), which makes Stryker take it for a test project and refuse to mutate it; it is not one. -->
+    <IsTestProject>false</IsTestProject>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />

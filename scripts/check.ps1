@@ -7,8 +7,8 @@
              style, the convention tests, and a secret scan of what is staged. A minute or two.
     full     Everything CI runs, so CI confirms what you already know: the fast checks, then a warnings-as-errors build and every .NET
              test (the SDK's tests pack it and build real samples, so this is the slow part).
-    release  Before a release or a big change: the full checks, then a secret scan of the whole history and the dependency report
-             (a known vulnerability fails; a newer version is only listed).
+    release  Before a release or a big change: the full checks, then mutation testing of Platform.Conventions (tools/mutation.py), the
+             dependency report (a known vulnerability fails; a newer version is only listed) and a secret scan of the whole history.
 
     Every step runs even after one fails, then a summary lists each step as PASSED, FAILED or SKIPPED. A step is SKIPPED, loudly, when
     the tool it needs is not installed or not running; a skipped step is a check you did not do. The script exits 1 if any step failed.
@@ -45,6 +45,7 @@ $Steps = @(
     @{ Tier = 'full'; Name = 'Build, warnings as errors'; Dir = '.'; Cmd = 'dotnet build Platform.sln -c Release -warnaserror --nologo -v q' },
     @{ Tier = 'full'; Name = '.NET tests'; Dir = '.'; Cmd = 'dotnet test Platform.sln -c Release --no-build --nologo' },
 
+    @{ Tier = 'release'; Name = 'Mutation, Platform.Conventions'; Dir = '.'; Cmd = 'python tools/mutation.py run Platform.Conventions' },
     @{ Tier = 'release'; Name = 'Dependency report'; Dir = '.'; Cmd = 'python tools/dependency_report.py' },
     @{ Tier = 'release'; Name = 'Secret scan, whole history'; Dir = '.'; Cmd = 'gitleaks git --redact --no-banner'; Needs = 'gitleaks' }
 )

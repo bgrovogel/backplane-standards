@@ -1,0 +1,15 @@
+{
+  "base": {
+    "target-framework": "net10.0",
+    "reporters": ["progress", "json"],
+    "thresholds": { "high": 95, "low": 90, "break": 0 },
+    "concurrency": 2
+  },
+  "projects": {
+    "Platform.Conventions": {
+      "tests": "tests/Platform.Conventions.Tests",
+      "project": "Platform.Conventions.csproj",
+      "thresholds": { "break": 55 }
+    }
+  }
+}

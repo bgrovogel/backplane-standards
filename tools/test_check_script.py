@@ -26,7 +26,7 @@ REQUIRED = {
         'gitleaks',
     ],
     'full': ['-warnaserror', 'dotnet test Platform.sln'],
-    'release': ['gitleaks git --redact', 'dependency_report.py'],
+    'release': ['gitleaks git --redact', 'dependency_report.py', 'mutation.py run Platform.Conventions'],
 }
 CI_GATES = [
     'npm run format:check',

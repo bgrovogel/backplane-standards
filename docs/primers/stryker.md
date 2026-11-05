@@ -106,6 +106,15 @@ dotnet stryker                          # whole project
 dotnet stryker --since:main             # only code changed since main (fast, for a pull request)
 ```
 
+In this repository one command does the same from the root, with the shared base configuration (`tools/mutation.json`) and the recording of the score ([mutation scores](../mutation-scores.md)):
+
+```
+python tools/mutation.py list                                  # the projects that can be mutated
+python tools/mutation.py run Platform.Conventions --record     # run it alone, then record the score (clean working tree only)
+```
+
+A project that references NUnit (a library of test fixtures, like `Platform.Conventions`) is taken by Stryker for a test project and refused with "No project found"; setting `<IsTestProject>false</IsTestProject>` in its project file says it is not one.
+
 Reading a survivor in the HTML report: open the file, find the red or orange mutant, read "replaced `<` with `<=`". Ask _what behaviour differs_, write a test that asserts it, rerun that file.
 An **equivalent mutant** is one that cannot change behaviour (for example `i < n` to `i != n` when `i` only increments by one); exclude it with a comment (`// Stryker disable once ...: reason`) and a written reason.
 
