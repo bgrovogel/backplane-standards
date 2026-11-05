@@ -1,7 +1,7 @@
 {
   "refs": { "stay_inside": true },
   "map": {
-    "named_folders": ["docs", "tools"],
+    "named_folders": ["docs", "tools", "scripts"],
     "groups": [
       ["src", "The packages"],
       ["tests", "The tests"]

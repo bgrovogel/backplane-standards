@@ -194,7 +194,7 @@ Tightening a gate, or adding a new one, needs no ADR: do it, and update this pag
 
 ## One command per tier
 
-Every repository exposes the same entry points so nobody has to remember which tool to run (**new**, a small script in the template):
+Every repository exposes the same entry points so nobody has to remember which tool to run (**exists**: `scripts/check.ps1` in `platform-standards` and in `mortgage-analytics`; a small script in the template; a test holds its steps to the repository, and to CI):
 
 | Command           | Runs                                                                                        |
 | ----------------- | ------------------------------------------------------------------------------------------- |
@@ -202,5 +202,5 @@ Every repository exposes the same entry points so nobody has to remember which t
 | `./check full`    | Tier 2 locally: everything CI runs, so CI is a confirmation and not a discovery             |
 | `./check release` | Tier 4: full mutation, cross-browser, load, oracle comparison, real-database tests          |
 
-(On Windows these are PowerShell scripts; the names are the same.) The reusable CI workflow calls the same scripts, so what runs
+(On Windows these are PowerShell scripts, `./scripts/check.ps1 fast`; the names are the same. A step whose tool is not installed is reported as SKIPPED, loudly, never as passed. `release` includes the dependency report, `tools/dependency_report.py`: a known vulnerability fails, a newer version is listed.) The reusable CI workflow calls the same scripts, so what runs
 on the machine is what runs in CI.

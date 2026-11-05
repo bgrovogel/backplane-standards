@@ -6,5 +6,5 @@ namespace Platform.Conventions.Tests;
 public class Readme : ReadmeConventions
 {
     /// <inheritdoc />
-    protected override IReadOnlyCollection<string> NamedFolders => ["docs", "tools"];
+    protected override IReadOnlyCollection<string> NamedFolders => ["docs", "tools", "scripts"];
 }

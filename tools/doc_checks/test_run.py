@@ -4,6 +4,7 @@ import contextlib
 import io
 import json
 import pathlib
+import re
 import tempfile
 import unittest
 
@@ -90,6 +91,16 @@ class ThisRepository(unittest.TestCase):
 
         self.assertEqual(
             ('primers' in config, code), (True, 0), 'no tool without a primer, here too, and the check is switched on:\n' + printed
+        )
+
+    def test_the_map_names_the_folders_the_csharp_readme_rule_requires(self):
+        source = (run.HERE.parents[1] / 'tests' / 'Platform.Conventions.Tests' / 'Readme.cs').read_text(encoding='utf-8')
+        block = re.search(r'NamedFolders\s*=>\s*\[(.*?)\];', source, re.S).group(1)
+
+        self.assertEqual(
+            sorted(re.findall(r'"([^"]+)"', block)),
+            sorted(run.load_config(run.HERE.parents[1])['map']['named_folders']),
+            'the map and the C# README rule name the same folders',
         )
 
 
