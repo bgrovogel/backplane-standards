@@ -205,7 +205,7 @@ If any step in that chain is impossible, **that is a logging or observability de
 - **Context is rebuilt per invocation:** the request id, tenant and user come from the event, never from a static field that survives
   into the next request on a warm instance.
 - **Evaluate AWS Lambda Powertools for .NET** (logging, metrics, tracing and an idempotency utility) **before** writing the kit's
-  versions: buy-or-adopt beats build when a maintained library already does the job. The evaluation is a task in the [roadmap](11-roadmap.md).
+  versions: buy-or-adopt beats build when a maintained library already does the job. The evaluation is done: [ADR 0013](adr/0013-powertools-for-lambda.md) (proposed) adopts its Idempotency, builds the redaction, and leaves Metrics and Tracing to the first Lambda spike.
 
 ---
 
@@ -229,8 +229,8 @@ Observability is behaviour, so it is tested.
 
 ## Open decisions
 
-| Decision                                         | Options                                                                      | Recommendation                                                                  |
-| ------------------------------------------------ | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| Error tracking beyond CloudWatch                 | Sentry (Hyvva uses it), or CloudWatch alarms only                            | Start with CloudWatch only; add Sentry when an app has users; the owner decides |
-| Build the logging kit or adopt Lambda Powertools | Build from the two existing redactors, or adopt Powertools and add redaction | Evaluate Powertools first ([roadmap](11-roadmap.md))                            |
-| Metrics export                                   | Embedded metric format, or OpenTelemetry to CloudWatch                       | EMF on Lambda for cost; OpenTelemetry API in code so it can change              |
+| Decision                                         | Options                                                                      | Recommendation                                                                                       |
+| ------------------------------------------------ | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Error tracking beyond CloudWatch                 | Sentry (Hyvva uses it), or CloudWatch alarms only                            | Start with CloudWatch only; add Sentry when an app has users; the owner decides                      |
+| Build the logging kit or adopt Lambda Powertools | Build from the two existing redactors, or adopt Powertools and add redaction | Evaluated: [ADR 0013](adr/0013-powertools-for-lambda.md) builds the redaction and adopts Idempotency |
+| Metrics export                                   | Embedded metric format, or OpenTelemetry to CloudWatch                       | EMF on Lambda for cost; OpenTelemetry API in code so it can change                                   |
