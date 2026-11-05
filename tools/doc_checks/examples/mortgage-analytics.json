@@ -1,0 +1,216 @@
+{
+  "$comment": "The doc_checks configuration of mortgage-analytics, kept here as a worked example and as the acceptance test; the application takes it as its own doc-checks.json when it adopts the platform (board task 19 of that application).",
+  "refs": {
+    "cited_guides": ["docs/14-why-this-not-that.md", "docs/15-demo-rate-change.md"],
+    "citations": "tools/doc-check/citations.json"
+  },
+  "map": {
+    "named_folders": ["client", "client/e2e", "client/src/app/core", "client/src/app/shared", "client/src/app/features", "deploy", "docs", "scripts", "tools"],
+    "groups": [
+      ["src", "The backend"],
+      ["tests", "The tests"],
+      ["client", "The Angular client"]
+    ],
+    "command": "python tools/doc-check/repo_map.py"
+  },
+  "counts": {
+    "sources": {
+      "domain": {
+        "parser": "dotnet-list",
+        "command": ["dotnet", "test", "tests/MortgageAnalytics.Domain.Tests", "--list-tests"],
+        "cwd": "."
+      },
+      "application": {
+        "parser": "dotnet-list",
+        "command": ["dotnet", "test", "tests/MortgageAnalytics.Application.Tests", "--list-tests"],
+        "cwd": "."
+      },
+      "infrastructure": {
+        "parser": "dotnet-list",
+        "command": ["dotnet", "test", "tests/MortgageAnalytics.Infrastructure.Tests", "--list-tests"],
+        "cwd": "."
+      },
+      "api": {
+        "parser": "dotnet-list",
+        "command": ["dotnet", "test", "tests/MortgageAnalytics.Api.IntegrationTests", "--list-tests"],
+        "cwd": "."
+      },
+      "conventions": {
+        "parser": "dotnet-list",
+        "command": ["dotnet", "test", "tests/MortgageAnalytics.Conventions.Tests", "--list-tests"],
+        "cwd": "."
+      },
+      "jest": {
+        "parser": "jest-json",
+        "command": ["npx", "jest", "--json", "--silent", "--coverage=false"],
+        "cwd": "client"
+      },
+      "e2e": {
+        "parser": "playwright-list",
+        "command": ["npx", "playwright", "test", "--list", "--project=chromium"],
+        "cwd": "client"
+      },
+      "axe": {
+        "parser": "playwright-list",
+        "command": ["npx", "playwright", "test", "--list", "--project=chromium", "e2e/accessibility.spec.ts"],
+        "cwd": "client"
+      }
+    },
+    "sums": {
+      "dotnet": ["domain", "application", "infrastructure", "api", "conventions"],
+      "total": ["dotnet", "jest", "e2e"]
+    },
+    "rules": [
+      {
+        "file": "README.md",
+        "pattern": "NUnit \\+ NSubstitute: ([\\d,]+) backend tests",
+        "count": "dotnet",
+        "kind": "exact"
+      },
+      {
+        "file": "README.md",
+        "pattern": "Jest: ([\\d,]+) Angular unit tests",
+        "count": "jest",
+        "kind": "exact"
+      },
+      {
+        "file": "README.md",
+        "pattern": "Playwright: ([\\d,]+) E2E tests",
+        "count": "e2e",
+        "kind": "exact"
+      },
+      {
+        "file": "README.md",
+        "pattern": "# ([\\d,]+) NUnit tests",
+        "count": "dotnet",
+        "kind": "exact"
+      },
+      {
+        "file": "README.md",
+        "pattern": "# ([\\d,]+) Jest unit tests",
+        "count": "jest",
+        "kind": "exact"
+      },
+      {
+        "file": "README.md",
+        "pattern": "# ([\\d,]+) Playwright tests",
+        "count": "e2e",
+        "kind": "exact"
+      },
+      {
+        "file": "README.md",
+        "pattern": "\\(([\\d,]+) are axe accessibility scans\\)",
+        "count": "axe",
+        "kind": "exact"
+      },
+      {
+        "file": "README.md",
+        "pattern": "([\\d,]+) \\.NET, [\\d,]+ Jest and [\\d,]+ Playwright tests",
+        "count": "dotnet",
+        "kind": "exact"
+      },
+      {
+        "file": "README.md",
+        "pattern": "[\\d,]+ \\.NET, ([\\d,]+) Jest and [\\d,]+ Playwright tests",
+        "count": "jest",
+        "kind": "exact"
+      },
+      {
+        "file": "README.md",
+        "pattern": "[\\d,]+ \\.NET, [\\d,]+ Jest and ([\\d,]+) Playwright tests",
+        "count": "e2e",
+        "kind": "exact"
+      },
+      {
+        "file": "docs/07-testing.md",
+        "pattern": "About ([\\d,]+) automated tests",
+        "count": "total",
+        "kind": "about"
+      },
+      {
+        "file": "docs/07-testing.md",
+        "pattern": "\\|\\s*Domain\\s*\\|\\s*([\\d,]+)\\s*\\|",
+        "count": "domain",
+        "kind": "exact"
+      },
+      {
+        "file": "docs/07-testing.md",
+        "pattern": "\\|\\s*Application\\s*\\|\\s*([\\d,]+)\\s*\\|",
+        "count": "application",
+        "kind": "exact"
+      },
+      {
+        "file": "docs/07-testing.md",
+        "pattern": "\\|\\s*Infrastructure\\s*\\|\\s*([\\d,]+)\\s*\\|",
+        "count": "infrastructure",
+        "kind": "exact"
+      },
+      {
+        "file": "docs/07-testing.md",
+        "pattern": "\\|\\s*API\\ integration\\s*\\|\\s*([\\d,]+)\\s*\\|",
+        "count": "api",
+        "kind": "exact"
+      },
+      {
+        "file": "docs/07-testing.md",
+        "pattern": "\\|\\s*Conventions\\s*\\|\\s*([\\d,]+)\\s*\\|",
+        "count": "conventions",
+        "kind": "exact"
+      },
+      {
+        "file": "docs/07-testing.md",
+        "pattern": "\\|\\s*Angular unit\\s*\\|\\s*([\\d,]+)\\s*\\|",
+        "count": "jest",
+        "kind": "exact"
+      },
+      {
+        "file": "docs/07-testing.md",
+        "pattern": "\\|\\s*End-to-end\\s*\\|\\s*([\\d,]+)\\s*\\|",
+        "count": "e2e",
+        "kind": "exact"
+      },
+      {
+        "file": "docs/08-interview-guide.md",
+        "pattern": "over ([\\d,]+) tests run in CI",
+        "count": "total",
+        "kind": "over"
+      },
+      {
+        "file": "docs/08-interview-guide.md",
+        "pattern": "its ([\\d,]+) tests run in under a second",
+        "count": "domain",
+        "kind": "exact"
+      },
+      {
+        "file": "docs/08-interview-guide.md",
+        "pattern": "\\|\\s*Tests\\s*\\|\\s*([\\d,]+) \\.NET",
+        "count": "dotnet",
+        "kind": "exact"
+      },
+      {
+        "file": "docs/08-interview-guide.md",
+        "pattern": "\u00b7 ([\\d,]+) Jest \u00b7",
+        "count": "jest",
+        "kind": "exact"
+      },
+      {
+        "file": "docs/08-interview-guide.md",
+        "pattern": "\u00b7 ([\\d,]+) Playwright \\(",
+        "count": "e2e",
+        "kind": "exact"
+      },
+      {
+        "file": "docs/08-interview-guide.md",
+        "pattern": "\\(([\\d,]+) axe scans\\)",
+        "count": "axe",
+        "kind": "exact"
+      },
+      {
+        "file": "docs/README.md",
+        "pattern": "More\\s+than\\s+([\\d,]+) tests",
+        "count": "total",
+        "kind": "over"
+      }
+    ]
+  }
+}

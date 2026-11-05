@@ -1,0 +1,21 @@
+{
+  "refs": { "stay_inside": true },
+  "map": {
+    "named_folders": ["docs", "tools"],
+    "groups": [
+      ["src", "The packages"],
+      ["tests", "The tests"]
+    ],
+    "command": "python tools/doc_checks/run.py map"
+  },
+  "primers": {
+    "index": "docs/primers/README.md",
+    "dependency_files": ["Directory.Packages.props", "package.json"],
+    "covers": {
+      "docs/primers/nunit.md": ["NUnit", "NUnit.*", "NUnit3TestAdapter", "Microsoft.NET.Test.Sdk"],
+      "docs/primers/roslyn-conventions-tests.md": ["Microsoft.CodeAnalysis.CSharp"],
+      "docs/primers/eslint-prettier-stylelint.md": ["prettier", "prettier-plugin-*", "@prettier/*"]
+    },
+    "exempt": {}
+  }
+}

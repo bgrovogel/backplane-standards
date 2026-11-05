@@ -34,7 +34,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run format:check
-      - run: python3 tools/check_links.py
+      # Links and citations, the generated MAP.md, a primer for every package (tools/doc_checks; their tests are in the unittest step below).
+      - run: python3 tools/doc_checks/run.py
       # The Python tools are linted and formatted with ruff (ruff.toml); their tests include the work board, which must be valid.
       - run: pipx run --spec ruff==0.14.0 ruff check tools
       - run: pipx run --spec ruff==0.14.0 ruff format --check tools

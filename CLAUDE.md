@@ -19,7 +19,7 @@ Work that task and no other. If the owner gives a different instruction, do that
 A scheduled or looping session takes only `--unattended` tasks, at most three in one session, one at a time. For each one:
 
 1. Set its Status to `doing` (the board allows one at a time) in the same commit as the work.
-2. Write the failing test first, make it pass, then run the checks (`dotnet test`, `npm run format:check`, `python tools/check_links.py`, `python -m unittest discover tools`, `python tools/board.py check`).
+2. Write the failing test first, make it pass, then run the checks (`dotnet test`, `npm run format:check`, `python tools/doc_checks/run.py`, `python -m unittest discover tools`, `python tools/board.py check`).
 3. Commit locally with a message that says why. A commit cannot name its own hash, so record it afterwards in a second, board-only commit marked with the skip marker: Status `done`, Result the hash of the first.
 4. **Stop and mark the task `blocked` (with the reason in Result) instead of pushing on** if a check fails and the cause is not clear in a few tries, the task needs a decision, or it touches `ask` or `owner` work.
 5. End by listing what was done and what is blocked.

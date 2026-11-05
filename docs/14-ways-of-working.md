@@ -122,11 +122,11 @@ These are the traps this machine laid, so a new session does not step in them ag
 
 ## What fails when these are broken
 
-| Habit                                            | What catches it                                         |
-| ------------------------------------------------ | ------------------------------------------------------- |
-| The board is valid                               | `board.py check`, run by a test                         |
-| Counts and citations in the docs are true        | `doc_counts.py` and the citation check, in CI           |
-| A new folder has a README and the map is current | A convention test and `repo_map.py --check`             |
-| No unattended push                               | Review rule (the agent's `CLAUDE.md`); the owner pushes |
-| The skip marker is not in a code commit's head   | Review rule, and the check before a push                |
-| Work follows the board                           | Review rule                                             |
+| Habit                                            | What catches it                                                    |
+| ------------------------------------------------ | ------------------------------------------------------------------ |
+| The board is valid                               | `board.py check`, run by a test                                    |
+| Counts and citations in the docs are true        | `tools/doc_checks` (counts, links, citations, map, primers), in CI |
+| A new folder has a README and the map is current | A convention test and `repo_map.py --check`                        |
+| No unattended push                               | Review rule (the agent's `CLAUDE.md`); the owner pushes            |
+| The skip marker is not in a code commit's head   | Review rule, and the check before a push                           |
+| Work follows the board                           | Review rule                                                        |
