@@ -45,6 +45,12 @@ public class FixtureWiringTests
 
     private static readonly SourceSet Empty = SourceSet.Together();
 
+    private static readonly TextSet EmptyText = TextSet.OfText();
+
+    private static readonly TextSet BadClient = TextSet.OfText(
+        ("client/src/app.ts", "const a = 1;\n// @ts-ignore\n// eslint-disable-next-line no-alert\n"),
+        ("client/e2e/home.spec.ts", "expect(page).toHaveURL('/');\n"));
+
     private static readonly SourceSet DomainLayer = SourceSet.OfText(("src/App.Domain/Thing.cs", "using App.Api;\nclass Thing { }"));
 
     private readonly List<string> _folders = [];
@@ -70,6 +76,8 @@ public class FixtureWiringTests
         yield return Case("Suppression", () => new SuppressionOn(), Bad);
         yield return Case("VagueNames", () => new VagueNamesOn(), Bad);
         yield return Case("Var", () => new VarOn(), Bad);
+        yield return CaseText("ClientSuppression", () => new ClientSuppressionOn(), BadClient);
+        yield return CaseText("Playwright", () => new PlaywrightOn(), BadClient);
     }
 
     public static IEnumerable<TestCaseData> ApplicationsWithNoSource()
@@ -83,6 +91,8 @@ public class FixtureWiringTests
         yield return Case("Suppression", () => new SuppressionOn(), Empty);
         yield return Case("VagueNames", () => new VagueNamesOn(), Empty);
         yield return Case("Var", () => new VarOn(), Empty);
+        yield return CaseText("ClientSuppression", () => new ClientSuppressionOn(), EmptyText);
+        yield return CaseText("Playwright", () => new PlaywrightOn(), EmptyText);
     }
 
     [TestCaseSource(nameof(ApplicationsThatBreakTheirRule))]
@@ -145,9 +155,13 @@ public class FixtureWiringTests
     private static TestCaseData Case(string name, Func<ConventionFixture> create, SourceSet source, IReadOnlyDictionary<string, Ceiling>? ceilings = null, string skip = "") =>
         new TestCaseData((Func<ConventionFixture>)(() => Make(create(), source, ceilings: ceilings)), skip).SetName(name);
 
+    private static TestCaseData CaseText(string name, Func<ConventionFixture> create, TextSet text) =>
+        new TestCaseData((Func<ConventionFixture>)(() => Make(create(), text: text)), "").SetName(name);
+
     /// <summary>Sets what the nested fixture reads, then hands it back: the nested fixtures have no constructor arguments, because NUnit would otherwise try to run them.</summary>
-    private static ConventionFixture Make(ConventionFixture fixture, SourceSet? source = null, string root = "", IReadOnlyDictionary<string, Ceiling>? ceilings = null)
+    private static ConventionFixture Make(ConventionFixture fixture, SourceSet? source = null, string root = "", IReadOnlyDictionary<string, Ceiling>? ceilings = null, TextSet? text = null)
     {
+        Scenario.Text = text ?? EmptyText;
         Scenario.Source = source ?? Empty;
         Scenario.Root = root;
         Scenario.Ceilings = ceilings ?? new Dictionary<string, Ceiling>();
@@ -232,6 +246,8 @@ public class FixtureWiringTests
 
     private static class Scenario
     {
+        public static TextSet Text { get; set; } = EmptyText;
+
         public static SourceSet Source { get; set; } = Empty;
 
         public static string Root { get; set; } = "";
@@ -243,6 +259,18 @@ public class FixtureWiringTests
     private sealed class NoAttributeOn : VarConventions
     {
         protected override Assembly ApplicationAssembly => typeof(object).Assembly;
+    }
+
+    [Explicit("built and run by FixtureWiringTests, not on its own")]
+    private sealed class ClientSuppressionOn : ClientSuppressionConventions
+    {
+        protected override TextSet Client => Scenario.Text;
+    }
+
+    [Explicit("built and run by FixtureWiringTests, not on its own")]
+    private sealed class PlaywrightOn : PlaywrightConventions
+    {
+        protected override TextSet EndToEnd => Scenario.Text;
     }
 
     [Explicit("built and run by FixtureWiringTests, not on its own")]

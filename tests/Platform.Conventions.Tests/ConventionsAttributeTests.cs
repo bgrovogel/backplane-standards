@@ -15,6 +15,9 @@ public class ConventionsAttributeTests
             Assert.That(attribute.ProductionFolders, Is.EqualTo(new[] { "src" }), "production code is under src");
             Assert.That(attribute.TestFolders, Is.EqualTo(new[] { "tests" }), "test code is under tests");
             Assert.That(attribute.IgnoredFolders, Is.EqualTo(new[] { "bin", "obj", "Migrations", "node_modules" }), "build output and generated code are never read");
+            Assert.That(attribute.ClientFolders, Is.EqualTo(new[] { "client/src", "client/e2e" }), "the client's code and its end-to-end tests are under client");
+            Assert.That(attribute.ClientExtensions, Is.EqualTo(new[] { ".ts", ".html" }), "TypeScript and templates are what the client rules read");
+            Assert.That(attribute.EndToEndFolders, Is.EqualTo(new[] { "client/e2e" }), "the Playwright tests are under client/e2e");
         });
     }
 

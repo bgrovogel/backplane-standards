@@ -5,10 +5,10 @@ do not edit by hand; change the folder's README and run the script. A test fails
 
 ## The packages
 
-| Folder                     | What it is                                                                                                                                                   |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `src/Platform.Conventions` | The conventions tests as a package (roadmap task 1.3): rules that read an application's C# with Roslyn and fail the build when a written standard is broken. |
-| `src/Platform.Sdk`         | The build rules every application starts with, as an MSBuild SDK package.                                                                                    |
+| Folder                     | What it is                                                                                                                                                                                         |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/Platform.Conventions` | The conventions tests as a package (roadmap task 1.3): rules that read an application's C# with Roslyn, and its client's TypeScript as text, and fail the build when a written standard is broken. |
+| `src/Platform.Sdk`         | The build rules every application starts with, as an MSBuild SDK package.                                                                                                                          |
 
 ## The tests
 

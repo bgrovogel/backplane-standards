@@ -86,6 +86,5 @@ public sealed class SourceSet
     /// <summary>A file's path relative to the root, with forward slashes.</summary>
     /// <param name="path">The file's path.</param>
     /// <returns>The relative path, or the path as given when it is not under the root.</returns>
-    public string RelativePath(string path) =>
-        Root.Length > 0 && Path.IsPathRooted(path) ? Path.GetRelativePath(Root, path).Replace(Path.DirectorySeparatorChar, '/') : path;
+    public string RelativePath(string path) => RelativePaths.Under(Root, path);
 }

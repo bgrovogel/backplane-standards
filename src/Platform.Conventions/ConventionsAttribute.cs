@@ -26,6 +26,15 @@ public sealed class ConventionsAttribute([CallerFilePath] string declaredIn = ""
     /// <summary>Folders whose files are build output or generated, and are never read, by name wherever they are.</summary>
     public string[] IgnoredFolders { get; init; } = ["bin", "obj", "Migrations", "node_modules"];
 
+    /// <summary>The client's code and its tests, relative to the root, which the TypeScript rules read.</summary>
+    public string[] ClientFolders { get; init; } = ["client/src", "client/e2e"];
+
+    /// <summary>The kinds of file in the client that the rules read, with the dot.</summary>
+    public string[] ClientExtensions { get; init; } = [".ts", ".html"];
+
+    /// <summary>The Playwright end-to-end tests, relative to the root.</summary>
+    public string[] EndToEndFolders { get; init; } = ["client/e2e"];
+
     /// <summary>The repository's root folder.</summary>
     public string Root => Path.GetFullPath(Path.Combine(DeclaredIn, RootFromThisFile));
 }

@@ -65,6 +65,23 @@ public partial class AcceptanceOnAnotherApplication
     }
 
     [Test]
+    public void TheClientRules_FindNothing_InTheClientTheyWereLiftedFrom()
+    {
+        string[] ignored = ["bin", "obj", "node_modules"];
+        TextSet client = TextSet.OfFolders(_root, ["client/src", "client/e2e"], [".ts", ".html"], ignored);
+        TextSet endToEnd = TextSet.OfFolders(_root, ["client/e2e"], [".ts"], ignored);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(client.Files, Has.Count.GreaterThan(200), "the client's files are found");
+            Assert.That(ClientSuppressionRule.Violations(client), Is.Empty, "every client suppression has a reason");
+            Assert.That(endToEnd.Files, Is.Not.Empty, "the end-to-end tests are found");
+            Assert.That(PlaywrightExpectRule.CallCount(endToEnd), Is.GreaterThan(100), "and its expect calls are seen");
+            Assert.That(PlaywrightExpectRule.WithoutAMessage(endToEnd), Is.Empty, "every Playwright expect has a message");
+        });
+    }
+
+    [Test]
     public void TheLoggingRules_FindNothing_AndSeeItsTemplates()
     {
         Assert.Multiple(() =>

@@ -23,6 +23,12 @@ public abstract class ConventionFixture
     /// <summary>Both together.</summary>
     protected virtual SourceSet All => SourcesOf(ApplicationAssembly).All;
 
+    /// <summary>The client's TypeScript and templates.</summary>
+    protected virtual TextSet Client => SourcesOf(ApplicationAssembly).Client;
+
+    /// <summary>The Playwright end-to-end tests.</summary>
+    protected virtual TextSet EndToEnd => SourcesOf(ApplicationAssembly).EndToEnd;
+
     /// <summary>The repository's root folder.</summary>
     protected virtual string Root => SourcesOf(ApplicationAssembly).All.Root;
 
@@ -37,8 +43,10 @@ public abstract class ConventionFixture
             ?? throw new InvalidOperationException($"{found.GetName().Name} has no [assembly: Conventions] attribute: add one to a file in the conventions project, so the rules can find the source.");
         SourceSet production = SourceSet.OfFolders(settings.Root, settings.ProductionFolders, settings.IgnoredFolders);
         SourceSet tests = SourceSet.OfFolders(settings.Root, settings.TestFolders, settings.IgnoredFolders);
-        return new Sources(production, tests, SourceSet.Together(production, tests));
+        TextSet client = TextSet.OfFolders(settings.Root, settings.ClientFolders, settings.ClientExtensions, settings.IgnoredFolders);
+        TextSet endToEnd = TextSet.OfFolders(settings.Root, settings.EndToEndFolders, [".ts"], settings.IgnoredFolders);
+        return new Sources(production, tests, SourceSet.Together(production, tests), client, endToEnd);
     });
 
-    private sealed record Sources(SourceSet Production, SourceSet Tests, SourceSet All);
+    private sealed record Sources(SourceSet Production, SourceSet Tests, SourceSet All, TextSet Client, TextSet EndToEnd);
 }
