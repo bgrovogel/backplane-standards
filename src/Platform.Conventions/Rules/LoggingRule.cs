@@ -76,6 +76,8 @@ public static class LoggingRule
         while (open >= 0)
         {
             int close = template.IndexOf('}', open);
+
+            // Stryker disable once Equality : the search starts at a '{', so a '}' found can never be at index 0
             if (close < 0)
             {
                 yield break;

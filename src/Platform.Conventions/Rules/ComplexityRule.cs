@@ -37,6 +37,7 @@ public static class ComplexityRule
     /// <returns>Each slack ceiling and what to do with it.</returns>
     public static IReadOnlyList<string> Slack(IEnumerable<MethodSize> sizes, IReadOnlyDictionary<string, Ceiling> ceilings, int maxLines = DefaultMaxLines, int maxComplexity = DefaultMaxComplexity)
     {
+        // Stryker disable once Linq : a group always has a member, so First and FirstOrDefault give the same one
         Dictionary<string, MethodSize> byKey = sizes.GroupBy(size => size.Key).ToDictionary(group => group.Key, group => group.First());
         return
         [

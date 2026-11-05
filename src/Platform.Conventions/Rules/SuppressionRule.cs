@@ -22,6 +22,7 @@ public static class SuppressionRule
 
     /// <summary>Every <c>#pragma warning disable</c> with no <c>//</c> reason on its line.</summary>
     private static IEnumerable<string> UnexplainedPragmas(SourceSet source, SyntaxTree tree) =>
+        // Stryker disable once Boolean : a pragma directive is trivia of a token already, never nested in other structured trivia, so descending finds the same ones
         tree.GetRoot().DescendantTrivia(descendIntoTrivia: true)
             .Where(trivia => trivia.IsKind(SyntaxKind.PragmaWarningDirectiveTrivia))
             .Select(trivia => (PragmaWarningDirectiveTriviaSyntax)trivia.GetStructure()!)

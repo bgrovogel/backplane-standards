@@ -109,6 +109,15 @@ public class FixtureWiringTests
         AssertEveryRuleTestFails(Make(new LayerOn(), DomainLayer, root), skip: "");
     }
 
+    [Test]
+    public void AFixtureInAnAssemblyWithNoConventionsAttribute_SaysHowToAddOne()
+    {
+        Assert.That(
+            () => typeof(NoAttributeOn).GetMethod(nameof(NoAttributeOn.SourceFiles_AreFound))!.Invoke(new NoAttributeOn(), null),
+            Throws.TypeOf<TargetInvocationException>().With.InnerException.Message.Contains("has no [assembly: Conventions] attribute: add one"),
+            "a missing attribute is explained, not a null reference");
+    }
+
     [TestCaseSource(nameof(ApplicationsWithNoSource))]
     public void EveryGuard_WhenThereIsNothingToScan_Fails(Func<ConventionFixture> make, string skip)
     {
@@ -186,7 +195,7 @@ public class FixtureWiringTests
         {
             string? message = FailureOf(fixture, guard);
 
-            Assert.That(message, Is.Not.Null.And.Not.Empty, $"{guard.Name} must fail when there is nothing to scan");
+            Assert.That((message ?? "").TrimStart().Split('\n')[0], Has.Length.GreaterThanOrEqualTo(30).And.Not.StartsWith("Assert.That("), $"{guard.Name} must fail when there is nothing to scan, and say what it was looking for");
         }
     }
 
@@ -200,7 +209,7 @@ public class FixtureWiringTests
             Assert.Multiple(() =>
             {
                 Assert.That(message, Is.Not.Null, $"{test.Name} must fail on an application that breaks its rule");
-                Assert.That(shown[0], Has.Length.GreaterThanOrEqualTo(30), $"{test.Name}: the first line says what to do about it");
+                Assert.That(shown[0], Has.Length.GreaterThanOrEqualTo(30).And.Not.Matches(@"Loans/|App\.|src/"), $"{test.Name}: the first line says what to do about it, and holds no violation");
                 Assert.That(shown.Skip(1).ToArray(), Is.Not.Empty.And.All.Length.GreaterThanOrEqualTo(8), $"{test.Name}: each violation follows on a line of its own, saying where and what");
             });
         }
@@ -228,6 +237,12 @@ public class FixtureWiringTests
         public static string Root { get; set; } = "";
 
         public static IReadOnlyDictionary<string, Ceiling> Ceilings { get; set; } = new Dictionary<string, Ceiling>();
+    }
+
+    [Explicit("built and run by FixtureWiringTests, not on its own")]
+    private sealed class NoAttributeOn : VarConventions
+    {
+        protected override Assembly ApplicationAssembly => typeof(object).Assembly;
     }
 
     [Explicit("built and run by FixtureWiringTests, not on its own")]
@@ -259,7 +274,7 @@ public class FixtureWiringTests
     [Explicit("built and run by FixtureWiringTests, not on its own")]
     private sealed class FloatingPointOn : FloatingPointConventions
     {
-        protected override IReadOnlyCollection<string> MoneyFolders => ["Loans/"];
+        protected override IReadOnlyCollection<string> MoneyFolders => ["Loans/", "Fees/"];
 
         protected override IReadOnlyDictionary<string, int> Ceilings => new Dictionary<string, int> { ["Loans/Other.cs"] = 3 };
 

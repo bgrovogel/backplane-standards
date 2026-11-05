@@ -11,17 +11,20 @@ public abstract class ConventionFixture
 {
     private static readonly ConcurrentDictionary<Assembly, Sources> Cache = new();
 
+    /// <summary>The assembly that carries <c>[assembly: Conventions]</c>: the conventions project's own, unless a test says otherwise.</summary>
+    protected virtual Assembly ApplicationAssembly => GetType().Assembly;
+
     /// <summary>The application's production code.</summary>
-    protected virtual SourceSet Production => SourcesOf(GetType().Assembly).Production;
+    protected virtual SourceSet Production => SourcesOf(ApplicationAssembly).Production;
 
     /// <summary>The application's test code.</summary>
-    protected virtual SourceSet Tests => SourcesOf(GetType().Assembly).Tests;
+    protected virtual SourceSet Tests => SourcesOf(ApplicationAssembly).Tests;
 
     /// <summary>Both together.</summary>
-    protected virtual SourceSet All => SourcesOf(GetType().Assembly).All;
+    protected virtual SourceSet All => SourcesOf(ApplicationAssembly).All;
 
     /// <summary>The repository's root folder.</summary>
-    protected virtual string Root => SourcesOf(GetType().Assembly).All.Root;
+    protected virtual string Root => SourcesOf(ApplicationAssembly).All.Root;
 
     /// <summary>Lines for an assertion message: one violation to a line.</summary>
     /// <param name="violations">What was found.</param>
