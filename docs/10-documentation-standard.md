@@ -166,13 +166,16 @@ Documentation that is wrong is worse than none. We treat it as code.
 | **Docs live in the repository** and change in the same pull request as the code | Drift                                                                      | Exists                                                          |
 | **Counts check** (`doc_counts.py`)                                              | A test count, version or total in the prose that no longer matches reality | Exists in `mortgage-analytics`                                  |
 | **Citation check**                                                              | A `file:line` that no longer points at the cited code                      | Done by hand today (guides 14 and 15); **to automate**          |
-| **Link check**                                                                  | A relative link or anchor that is broken                                   | **New**                                                         |
+| **Link check** (`tools/check_links.py`)                                         | A relative link or anchor that is broken                                   | Exists in `platform-standards`                                  |
 | **Primer-per-package check**                                                    | A dependency with no primer                                                | **New**                                                         |
 | **README-per-folder check**                                                     | A project or top-level folder with no README                               | **New**                                                         |
 | **Code snippets are extracted from real code**                                  | An example that no longer compiles                                         | **New** (snippets marked and compiled in a test project)        |
 | **`MAP.md` regenerated and compared**                                           | A map that omits a new project                                             | **New**                                                         |
 | **"Last verified" date and version on each primer**                             | A primer about version 5 describing version 8                              | **New**; a quarterly review lists primers older than six months |
 | **Formatting by Prettier**                                                      | Inconsistent Markdown                                                      | Exists                                                          |
+| **Work board check** (`board.py check`)                                         | A plan that lost an id, loops, or marks a task done with no commit         | Exists in `mortgage-analytics`                                  |
+| **Portable Markdown only**                                                      | A diagram or alert that shows as raw text in an editor preview             | Review rule                                                     |
+| **Check the committed text, not the working tree**                              | A stale count that a neighbouring session's uncommitted edit hides locally | Review rule; see [ways of working](14-ways-of-working.md)       |
 
 **A stale document is a bug.** It gets an issue, an owner and a fix like any other defect.
 

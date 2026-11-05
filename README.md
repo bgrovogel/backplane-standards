@@ -29,6 +29,8 @@ is next. Nothing is extracted yet.
 | 11  | [Roadmap](docs/11-roadmap.md)                                     | The build order, what "done" means for each step, the first-week checklist, the open decisions             |
 | 12  | [Mortgage first](docs/12-mortgage-first.md)                       | The agreed focus: bring `mortgage-analytics` up to the standards first, with measured gaps and a work list |
 | 13  | [buybright comparison](docs/13-buybright-comparison.md)           | What buybright has that the mortgage app lacks, and what is worth porting                                  |
+| 14  | [Ways of working](docs/14-ways-of-working.md)                     | Finding work, working alone, committing, pushing, keeping docs true, and the traps of this machine         |
+| 15  | [UI and UX standards](docs/15-ui-and-ux-standards.md)             | Putting the reader first, not flooding a page, popups, words, accessibility, a visual system, honesty      |
 
 Then the [primers](docs/primers/README.md): one short guide per tool or framework (what it is, why we use it, how it works
 inside, how it fits with the others, what goes wrong). If you are new, start with

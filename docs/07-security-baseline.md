@@ -50,6 +50,10 @@ is released. The-hive's `Platform_STRIDE_Threat_Model_Booking.md` and `..._Stati
    unknown user look identical, in the message and in the response time as far as practical.
 7. **Lockout and rate limits** on every credential endpoint, keyed per account **and** per client address (IPv6 by /64, not the single address).
 8. **Account recovery is the weakest link:** one-time codes are short-lived, single-use and never logged; the recovery email says what was requested and how to report it.
+9. **A limit on what an account can accumulate holds at both ends of a two-step action.** A passkey registration is started and then finished; the cap (ten) is checked when it finishes as well as when
+   it starts, or two ceremonies begun together can leave eleven (`mortgage-analytics`, with a test that saw 11 against 10).
+10. **Session records are removed when they can no longer be used,** by the application itself on a schedule (once a day), not only when their owner happens to list them; a person who never
+    comes back would otherwise leave rows for ever.
 
 ---
 
@@ -148,6 +152,10 @@ A tenant is one customer's isolated world. A cross-tenant leak is the worst bug 
 5. **Marketing mail has an unsubscribe link;** transactional mail says why it was sent.
 6. **A mail outage never loses or breaks the action** that triggered it: the work succeeds, the mail is queued and retried (`mortgage-analytics`
    has a test that adding a passkey still works while the mail server is down).
+7. **No address is sent more than a few of the mail anyone can ask for in an hour,** however many clients ask (five in `mortgage-analytics`; sign-up, "already registered" and reset). Past it nothing is sent
+   and the answer is the same, so the limit tells nobody who has an account; the log notes it without the address. A security notice to the account's owner is never counted.
+8. **The connection to the mail server must be encrypted,** and a server that offers no encryption gets neither the password nor the email (STARTTLS required; TLS from the first byte on 465). A setting
+   turns it off for a local mail catcher only, and a production start with it off says so in the log.
 
 ---
 
