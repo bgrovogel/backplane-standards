@@ -55,6 +55,45 @@ def problems(names, config, exists, index_text):
     return found
 
 
+SECTIONS = [
+    'What it is',
+    'Why we use it',
+    'The big idea',
+    'How it works inside',
+    'How it fits with everything else',
+    'An example from our code',
+    'How to use it',
+    'The rules we follow',
+    'What goes wrong',
+    'Terms',
+    'Further reading',
+]
+
+
+def template_problems(name, text):
+    """What a primer lacks of the template: the read time and verified date in its header, every section in order, and a source under Further reading."""
+    found = [
+        f'{name}: no {label} in its header'
+        for label, mark in (('read time', '**Read time:**'), ('verified date', '**Last verified:**'))
+        if mark not in text
+    ]
+    headings = re.findall(r'^## (.+?)\s*$', text, re.MULTILINE)
+    missing = [section for section in SECTIONS if section not in headings]
+    found += [f"{name}: no section '{section}'" for section in missing]
+    if not missing:
+        present = [heading for heading in headings if heading in SECTIONS]
+        found += [f"{name}: '{actual}' is where '{expected}' belongs" for actual, expected in zip(present, SECTIONS) if actual != expected]
+        sources = text.split('## Further reading', 1)[1]
+        if not re.search(r'https?://|\]\(', sources):
+            found.append(f"{name}: 'Further reading' names no source")
+    return found
+
+
+def folder_problems(files, skip=()):
+    """The template problems of every primer in {name: text}, except the files in `skip` (the index, the map)."""
+    return [line for name, text in sorted(files.items()) if name not in skip for line in template_problems(name, text)]
+
+
 def primer_problems(root, config):
     """The same, for the repository at `root`."""
     root = pathlib.Path(root)
@@ -64,4 +103,9 @@ def primer_problems(root, config):
         return path.read_text(encoding='utf-8') if path.exists() else None
 
     names = dependencies(config.get('dependency_files', ['Directory.Packages.props', 'package.json']), read)
-    return problems(names, config, lambda path: (root / path).exists(), read(config['index']) or '')
+    found = problems(names, config, lambda path: (root / path).exists(), read(config['index']) or '')
+    folder = root / config.get('folder', 'docs/primers')
+    if 'template' in config and folder.is_dir():
+        files = {path.name: path.read_text(encoding='utf-8') for path in folder.glob('*.md')}
+        found += folder_problems(files, config['template'].get('skip', []))
+    return found

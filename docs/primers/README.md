@@ -37,23 +37,25 @@ Each of these is grounded in code from `mortgage-analytics` (the reference imple
 | [MailKit and MimeKit](mailkit.md)                                                | MailKit, MimeKit, SMTP                                                                                                             | `SmtpMailTransport`, an email that does not arrive                     |
 | [Health checks](health-checks.md)                                                | ASP.NET Core health checks                                                                                                         | `/health`, a container that restarts                                   |
 | [RxJS](rxjs.md)                                                                  | RxJS 7                                                                                                                             | `pipe(...)`, `switchMap`, `latestRequest`                              |
+| [AWS CDK in C#](aws-cdk-in-csharp.md)                                            | AWS CDK, constructs, synth, `cdk diff`, bootstrapping                                                                              |
+| [CDK assertions and cdk-nag](cdk-assertions-and-cdk-nag.md)                      | Infrastructure tests: `Amazon.CDK.Assertions`, `Cdklabs.CdkNag`                                                                    |
+| [gitleaks](gitleaks.md)                                                          | Secret scanning of staged changes and history                                                                                      |
+| [MinVer](minver.md)                                                              | Versions from git tags                                                                                                             |
+| [`dotnet new` templates](dotnet-new-templates.md)                                | Template engine, `template.json`, template packages (the app template)                                                             |
 
 ## Planned (written when the tool is adopted)
 
 The rule is no tool without a primer, so each of these is written **in the phase that adopts it**, checked against the current official documentation at that
 time, not guessed now. Phases are in the [roadmap](../11-roadmap.md).
 
-| Primer                            | Tool                                                                             | Phase |
-| --------------------------------- | -------------------------------------------------------------------------------- | ----- |
-| AWS CDK in C#                     | AWS CDK, constructs, synth, `cdk diff`                                           | 1     |
-| CDK assertions and cdk-nag        | Infrastructure tests                                                             | 1     |
-| Lambda and the serverless model   | Lambda, cold starts, native AOT, concurrency, API Gateway                        | 2     |
-| Cognito                           | User pools, tokens, passkeys, triggers                                           | 4     |
-| SES, SQS and EventBridge          | Email, queues, events                                                            | 4     |
-| Stripe                            | Checkout, Connect, webhooks, idempotency keys                                    | 4     |
-| OpenTelemetry and X-Ray           | Tracing and metrics                                                              | 2     |
-| AWS Lambda Powertools for .NET    | Logging, metrics, tracing, idempotency (evaluated before the kit builds its own) | 2     |
-| FsCheck and fast-check            | Property-based testing                                                           | 2     |
-| gitleaks and OWASP ZAP            | Secret scanning, dynamic security scan                                           | 1, 4  |
-| MinVer and `dotnet new` templates | Versioning from tags; the app template                                           | 1, 2  |
-| Typed client generation           | NSwag, Kiota or openapi-typescript (chosen by a spike)                           | 2     |
+| Primer                          | Tool                                                                             | Phase |
+| ------------------------------- | -------------------------------------------------------------------------------- | ----- |
+| Lambda and the serverless model | Lambda, cold starts, native AOT, concurrency, API Gateway                        | 2     |
+| Cognito                         | User pools, tokens, passkeys, triggers                                           | 4     |
+| SES, SQS and EventBridge        | Email, queues, events                                                            | 4     |
+| Stripe                          | Checkout, Connect, webhooks, idempotency keys                                    | 4     |
+| OpenTelemetry and X-Ray         | Tracing and metrics                                                              | 2     |
+| AWS Lambda Powertools for .NET  | Logging, metrics, tracing, idempotency (evaluated before the kit builds its own) | 2     |
+| FsCheck and fast-check          | Property-based testing                                                           | 2     |
+| OWASP ZAP                       | Dynamic security scan (gitleaks has its primer)                                  | 4     |
+| Typed client generation         | NSwag, Kiota or openapi-typescript (chosen by a spike)                           | 2     |

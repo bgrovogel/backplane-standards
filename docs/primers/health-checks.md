@@ -106,6 +106,6 @@ Assert.That(body, Is.EqualTo("Healthy"), "the health endpoint is used by contain
 
 ## Further reading
 
-- Microsoft Learn: "Health checks in ASP.NET Core" (tags, predicates, custom response writers, the publisher).
-- Kubernetes documentation on liveness and readiness probes (the same idea on another platform).
+- Microsoft Learn: [Health checks in ASP.NET Core](https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks) (tags, predicates, custom response writers, the publisher).
+- Kubernetes documentation on [liveness and readiness probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) (the same idea on another platform).
 - In this repo: `docs/12-deploying.md` (watching it) and `deploy/docker-compose.yml`.

@@ -135,6 +135,6 @@ await passkeys.RecordUseAsync(passkey.CredentialId, result.SignCount, clock.GetU
 
 ## Further reading
 
-- W3C: "Web Authentication: An API for accessing Public Key Credentials" (the standard); webauthn.io and passkeys.dev for plain explanations.
-- The Fido2 library's repository documentation (fido2-net-lib) for the options you can set.
+- W3C: [Web Authentication: An API for accessing Public Key Credentials](https://www.w3.org/TR/webauthn-3/) (the standard); [webauthn.io](https://webauthn.io) and [passkeys.dev](https://passkeys.dev) for plain explanations.
+- The Fido2 library's repository documentation ([fido2-net-lib](https://github.com/passwordless-lib/fido2-net-lib)) for the options you can set.
 - In this repo: `docs/04-backend.md` (passkeys), `PasskeyEndpoints.cs` and `Security/PasskeyState.cs`.

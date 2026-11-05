@@ -132,6 +132,6 @@ queue
 
 ## Further reading
 
-- rxjs.dev: "Overview", "Operators" and the operator decision tree ("Which operator do I use?").
-- Angular documentation: "RxJS interop with Angular signals".
+- rxjs.dev: [Overview](https://rxjs.dev/guide/overview), "Operators" and the [operator decision tree](https://rxjs.dev/operator-decision-tree) ("Which operator do I use?").
+- Angular documentation: [RxJS interop with Angular signals](https://angular.dev/ecosystem/rxjs-interop).
 - In this repo: `client/src/app/core/state/latest-request.ts` and its spec; `docs/05-frontend.md`.

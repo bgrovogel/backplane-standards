@@ -109,6 +109,6 @@ public static MimeMessage ToMimeMessage(EmailMessage message, string from)
 
 ## Further reading
 
-- MailKit's documentation and the MimeKit documentation (the repository wiki and API docs).
+- The [MailKit](https://github.com/jstedfast/MailKit) and [MimeKit](https://github.com/jstedfast/MimeKit) documentation (the repository wikis and API docs).
 - The provider's SMTP guide for your host; Google's and Microsoft's bulk-sender requirements for SPF, DKIM and DMARC.
 - In this repo: `docs/12-deploying.md` (email settings) and `src/MortgageAnalytics.Api/Email/`.

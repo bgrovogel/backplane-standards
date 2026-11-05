@@ -16,6 +16,7 @@
       "docs/primers/roslyn-conventions-tests.md": ["Microsoft.CodeAnalysis.CSharp"],
       "docs/primers/eslint-prettier-stylelint.md": ["prettier", "prettier-plugin-*", "@prettier/*"]
     },
-    "exempt": {}
+    "exempt": {},
+    "template": { "skip": ["README.md", "00-how-it-fits-together.md"] }
   }
 }

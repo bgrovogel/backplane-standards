@@ -103,5 +103,53 @@ class FromAFolder(unittest.TestCase):
         )
 
 
+SOURCE = '[the docs](https://example.com/docs)'
+GOOD = '# Tool\n\n> One sentence.\n\n**Read time:** 5 min · **Last verified:** 2026-11-05\n\n' + ''.join(
+    f'## {heading}\n\n{SOURCE if heading == "Further reading" else "text"}\n\n' for heading in primers.SECTIONS
+)
+
+
+class Template(unittest.TestCase):
+    def test_a_primer_with_every_section_and_its_header_passes(self):
+        self.assertEqual(primers.template_problems('x.md', GOOD), [], 'the template is followed')
+
+    def test_a_missing_section_is_named(self):
+        text = GOOD.replace('## What goes wrong\n', '## Troubles\n')
+
+        self.assertEqual(
+            primers.template_problems('x.md', text),
+            ["x.md: no section 'What goes wrong'"],
+            'the reader knows where to look because every primer has the same sections',
+        )
+
+    def test_sections_out_of_order_are_found(self):
+        text = GOOD.replace('## Terms', '## Early').replace('## Why we use it', '## Terms').replace('## Early', '## Why we use it')
+
+        self.assertEqual(
+            len(primers.template_problems('x.md', text)), 2, 'a section in the wrong place is as hard to find as a missing one'
+        )
+
+    def test_the_read_time_and_the_verified_date_are_required(self):
+        text = GOOD.replace('**Read time:** 5 min · **Last verified:** 2026-11-05', '')
+
+        self.assertEqual(
+            len(primers.template_problems('x.md', text)), 2, 'a primer says how long it takes and when it was last checked against the tool'
+        )
+
+    def test_a_primer_names_its_sources_under_further_reading(self):
+        text = GOOD.replace(SOURCE, 'text')
+
+        self.assertEqual(
+            primers.template_problems('x.md', text),
+            ["x.md: 'Further reading' names no source"],
+            'a primer with no sources cannot be checked',
+        )
+
+    def test_the_skipped_files_are_not_held_to_it(self):
+        found = primers.folder_problems({'a.md': GOOD, 'README.md': '# Index\n', 'b.md': '# Bad\n'}, skip=['README.md'])
+
+        self.assertEqual(sorted({line.split(':')[0] for line in found}), ['b.md'], 'the index and the map are not primers')
+
+
 if __name__ == '__main__':
     unittest.main()

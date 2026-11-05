@@ -4,7 +4,7 @@ Small scripts that check this repository's own documents. They need only Python 
 
 | Script                 | What it checks                                                                                                                                                                                  |
 | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `doc_checks/`          | The documentation checks: links and citations, `MAP.md`, a primer for every package, test counts. `python tools/doc_checks/run.py`                                                              |
+| `doc_checks/`          | The documentation checks: links and citations, `MAP.md`, a primer for every package and each primer in the template, test counts. `python tools/doc_checks/run.py`                              |
 | `dependency_report.py` | Vulnerable packages (NuGet, including the ones another package brings in, and npm) fail; newer versions are listed. Part of `check release`                                                     |
 | `test_check_script.py` | `scripts/check.ps1` still names real npm scripts and paths, each tier keeps its gates, and everything CI runs is in the script                                                                  |
 | `mutation.py`          | Runs Stryker for a chosen project from the shared base in `mutation.json`, scores the report and records it in [`docs/mutation-scores.md`](../docs/mutation-scores.md). Part of `check release` |

@@ -133,6 +133,6 @@ services.Configure<SecurityStampValidatorOptions>(options => options.ValidationI
 
 ## Further reading
 
-- Microsoft Learn: "Introduction to Identity on ASP.NET Core" and "ASP.NET Core Data Protection overview" (key management, key storage providers).
-- OWASP: Session Management Cheat Sheet; NIST SP 800-63B (password guidance).
+- Microsoft Learn: [Introduction to Identity on ASP.NET Core](https://learn.microsoft.com/en-us/aspnet/core/security/authentication/identity) and [ASP.NET Core Data Protection overview](https://learn.microsoft.com/en-us/aspnet/core/security/data-protection/introduction) (key management, key storage providers).
+- OWASP: [Session Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html); [NIST SP 800-63B](https://pages.nist.gov/800-63-3/sp800-63b.html) (password guidance).
 - In this repo: `docs/04-backend.md` (security) and `docs/12-deploying.md` (the key volume and backups).
