@@ -4,7 +4,7 @@ The mutation score of each project that is mutation-tested: the percent of the m
 
 | Project              | Score | Killed | Survived | Break | Measured   | At      |
 | -------------------- | ----- | ------ | -------- | ----- | ---------- | ------- |
-| Platform.Conventions | 99.5  | 385    | 2        | 95    | 2026-11-05 | 9149a79 |
+| Platform.Conventions | 99.0  | 489    | 5        | 95    | 2026-11-05 | 1afd893 |
 
 ## Survivors accepted
 
