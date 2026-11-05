@@ -170,23 +170,40 @@ Each application's pipeline file should be a few lines calling one shared defini
 # .github/workflows/ci.yml in an application
 name: CI
 on:
-  push: { branches: [main], paths-ignore: ['**/*.md', 'docs/**'] }
+  push:
+    branches: [main]
+    paths-ignore: ['**/*.md', 'docs/**']
   pull_request:
+    paths-ignore: ['**/*.md', 'docs/**']
+# A newer push cancels the older run, so a burst of pushes costs one run.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
 jobs:
   ci:
-    uses: <owner>/platform-standards/.github/workflows/dotnet-angular-ci.yml@v1
+    uses: bgrovogel/platform-standards/.github/workflows/dotnet-angular-ci.yml@main
     with:
       dotnet-solution: Acme.sln
       client-directory: client
+      test-filter: TestCategory!=Postgres
 ```
 
-The shared workflow (in `platform-standards`) runs `./scripts/check.ps1 full` equivalents: restore in locked mode, build with warnings as errors, backend tests
-with coverage, frontend lint, typecheck and Jest, end-to-end on the production build, the docs check, and the container smoke build. It uploads coverage and reports
-a summary. It pins every third-party action to a commit and requests read-only permissions.
+The shared workflow is [`.github/workflows/dotnet-angular-ci.yml`](../.github/workflows/dotnet-angular-ci.yml) (roadmap task 1.8). The caller decides **when** it runs (branches, path filters, concurrency, which are the minutes policy above); the workflow decides **what** runs:
 
-**To verify before relying on it:** that a workflow in a _private_ repository can be called from another private repository of the same owner (GitHub has an
-"Access" setting under Actions for this); if not, the standards repository must be public or the workflow copied by the template. Listed in
-[open verifications](11-roadmap.md#open-verifications).
+| Job          | Runs                                                                                                                                                                             | When                                       |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| `backend`    | Restore in locked mode, build with warnings as errors, the vulnerable-package scan, every .NET test with coverage, and the coverage threshold (`coverage-threshold`, default 85) | Always                                     |
+| `frontend`   | `npm ci`, `npm audit --omit=dev`, lint, format check, style lint, typecheck, Jest                                                                                                | `client-directory` is not empty (`client`) |
+| `e2e`        | The production build run under Playwright                                                                                                                                        | After both, when `e2e-script` is not empty |
+| `mutation`   | `dotnet stryker` in the folder given                                                                                                                                             | Only if `mutation-directory` is given      |
+| `docker`     | `docker build`, then the application's own smoke script                                                                                                                          | Only if `docker-smoke-script` is given     |
+| `repository` | The application's own script for what belongs to the repository (formatting of documents, tool tests, the documentation checks)                                                  | Only if `repository-script` is given       |
+
+What holds it to the policy, and fails if it slips ([`tools/test_reusable_workflow.py`](../tools/test_reusable_workflow.py)): every third-party action is pinned to a commit with its version in a comment; the permissions are `contents: read` once, at the top, and no job widens them; no input is pasted into a shell (each goes through `env:`, so a value cannot become a command); no secret is used; every gate above is present; every input is described and has a default, except the solution. Whether the expressions and inputs are valid is a review rule, not a gate: run `actionlint` on the file when you change it (it is not a CI job, because of the minutes).
+
+**Calling a public repository's workflow from a private one.** `platform-standards` is public, and GitHub's documentation says a workflow in a public repository can be called from any repository. That is the answer to the first of the [open verifications](11-roadmap.md#open-verifications) for this repository, but it has **not** been tried by us: the first private application to call it confirms it. Pin the caller to a tag or a commit once releases exist; `@main` is for the first trial only.
 
 ---
 

@@ -1,0 +1,231 @@
+name: dotnet-angular-ci
+
+# The pipeline of a .NET API with an Angular client, written once. An application's own ci.yml is a few lines that call it (see docs/09-repositories-and-delivery.md):
+# it decides WHEN this runs (branches, path filters, concurrency), and this file decides WHAT runs. Linux runners only; every action is pinned to a commit.
+#
+# Minutes: a run costs what its jobs cost. backend and frontend run side by side, e2e after both, and the three optional jobs (mutation, docker, repository)
+# run only when their input is given.
+
+on:
+  workflow_call:
+    inputs:
+      dotnet-solution:
+        description: The solution to restore, build and test, for example Acme.sln
+        type: string
+        required: true
+      client-directory:
+        description: The Angular client, where package.json is. Empty means the application has no client and the frontend and e2e jobs are skipped.
+        type: string
+        default: client
+      node-version:
+        description: The Node.js version for the client
+        type: string
+        default: '24'
+      coverage-threshold:
+        description: The minimum line and branch coverage of the .NET tests, in percent. Below it the build fails.
+        type: number
+        default: 85
+      test-filter:
+        description: A dotnet test filter, for example TestCategory!=Postgres to leave out the tests that need a database container. Empty runs every test.
+        type: string
+        default: ''
+      e2e-script:
+        description: The npm script in the client that runs the end-to-end tests on the production build. Empty skips the e2e job.
+        type: string
+        default: e2e
+      e2e-install-script:
+        description: The npm script in the client that installs the browsers the end-to-end tests use
+        type: string
+        default: e2e:install
+      mutation-directory:
+        description: The test project folder to run dotnet stryker in. Empty skips mutation testing (it is better run on a schedule or on the machine).
+        type: string
+        default: ''
+      docker-smoke-script:
+        description: A script in the repository that gets the built image name as its first argument, starts it and checks it. Empty skips the docker job.
+        type: string
+        default: ''
+      repository-script:
+        description: A shell script for the checks that belong to the repository and not to a layer (formatting, documents, tool tests). Empty skips the job.
+        type: string
+        default: ''
+
+# Every job only reads the repository; nothing here pushes, comments or releases. A caller can narrow this, never widen it.
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    name: .NET build, tests and coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6
+        with:
+          global-json-file: global.json
+          # NuGet packages are cached, keyed on the lock files.
+          cache: true
+          cache-dependency-path: '**/packages.lock.json'
+      - name: Restore tools
+        if: hashFiles('.config/dotnet-tools.json') != ''
+        run: dotnet tool restore
+      # Locked mode: fails if a project's packages no longer match its packages.lock.json.
+      - run: dotnet restore "$SOLUTION" --locked-mode
+        env:
+          SOLUTION: ${{ inputs.dotnet-solution }}
+      # Warnings are errors, and the code style in .editorconfig is checked by the build.
+      - run: dotnet build "$SOLUTION" -c Release --no-restore -warnaserror
+        env:
+          SOLUTION: ${{ inputs.dotnet-solution }}
+      # No NuGet package with a known vulnerability, direct or transitive.
+      - name: Vulnerable packages
+        env:
+          SOLUTION: ${{ inputs.dotnet-solution }}
+        run: |
+          dotnet list "$SOLUTION" package --vulnerable --include-transitive | tee vulnerable.txt
+          ! grep -q "has the following vulnerable packages" vulnerable.txt
+      # Includes the conventions tests, so a rule broken in the application fails here.
+      - name: Test with coverage
+        env:
+          SOLUTION: ${{ inputs.dotnet-solution }}
+          TEST_FILTER: ${{ inputs.test-filter }}
+        run: |
+          filter=()
+          if [ -n "$TEST_FILTER" ]; then filter=(--filter "$TEST_FILTER"); fi
+          dotnet test "$SOLUTION" -c Release --no-build "${filter[@]}" --collect:"XPlat Code Coverage" --results-directory ./coverage
+      # Needs dotnet-reportgenerator-globaltool in the application's tool manifest.
+      - name: Coverage report
+        run: >
+          dotnet reportgenerator
+          -reports:"coverage/**/coverage.cobertura.xml"
+          -targetdir:coverage/report
+          "-reporttypes:JsonSummary;MarkdownSummaryGithub;Html"
+      - name: Publish coverage summary
+        run: cat coverage/report/SummaryGithub.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Enforce coverage threshold
+        env:
+          COVERAGE_THRESHOLD: ${{ inputs.coverage-threshold }}
+        run: |
+          jq -r '.summary | "Lines \(.linecoverage)%  Branches \(.branchcoverage)%"' coverage/report/Summary.json
+          jq -e --argjson min "$COVERAGE_THRESHOLD" \
+            '.summary.linecoverage >= $min and .summary.branchcoverage >= $min' coverage/report/Summary.json \
+            || { echo "::error::Backend coverage is below ${COVERAGE_THRESHOLD}%"; exit 1; }
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        if: always()
+        with:
+          name: backend-coverage
+          path: coverage/report
+
+  frontend:
+    name: Angular lint, unit tests and coverage
+    if: inputs.client-directory != ''
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.client-directory }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: npm
+          cache-dependency-path: ${{ inputs.client-directory }}/package-lock.json
+      - run: npm ci
+      # No known vulnerability in what ships to the browser. Development tools are reviewed instead.
+      - run: npm audit --omit=dev
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm run lint:styles
+      # Jest and Playwright only strip the types, so the specs, page objects and test builders are type-checked here.
+      - run: npm run typecheck
+      # The coverage threshold is set in the client's own Jest configuration.
+      - run: npm test -- --ci
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        if: always()
+        with:
+          name: frontend-coverage
+          path: ${{ inputs.client-directory }}/coverage
+
+  e2e:
+    name: Angular build and Playwright
+    if: inputs.e2e-script != '' && inputs.client-directory != ''
+    needs: [backend, frontend]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.client-directory }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6
+        with:
+          global-json-file: global.json
+          cache: true
+          cache-dependency-path: '**/packages.lock.json'
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: npm
+          cache-dependency-path: ${{ inputs.client-directory }}/package-lock.json
+      - run: npm ci
+      - run: npm run "$E2E_INSTALL_SCRIPT"
+        env:
+          E2E_INSTALL_SCRIPT: ${{ inputs.e2e-install-script }}
+      # Builds the production app and runs it from the API, as the container does.
+      - run: npm run "$E2E_SCRIPT"
+        env:
+          E2E_SCRIPT: ${{ inputs.e2e-script }}
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        if: failure()
+        with:
+          name: playwright-report
+          path: ${{ inputs.client-directory }}/playwright-report
+
+  mutation:
+    name: Mutation testing
+    if: inputs.mutation-directory != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6
+        with:
+          global-json-file: global.json
+          cache: true
+          cache-dependency-path: '**/packages.lock.json'
+      - run: dotnet tool restore
+      # The break threshold is set in the project's own Stryker configuration.
+      - run: dotnet stryker
+        working-directory: ${{ inputs.mutation-directory }}
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        if: always()
+        with:
+          name: mutation-report
+          path: ${{ inputs.mutation-directory }}/StrykerOutput/*/reports/
+
+  docker:
+    name: Docker image builds and runs
+    if: inputs.docker-smoke-script != ''
+    needs: backend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - run: docker build -t app:ci .
+      # Proves the image runs, not just that it builds: the application's own script starts it and checks it.
+      - run: bash "$SMOKE_SCRIPT" app:ci
+        env:
+          SMOKE_SCRIPT: ${{ inputs.docker-smoke-script }}
+
+  repository:
+    name: Repository checks
+    if: inputs.repository-script != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6
+        with:
+          global-json-file: global.json
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: ${{ inputs.node-version }}
+      - run: bash -eo pipefail -c "$REPOSITORY_SCRIPT"
+        env:
+          REPOSITORY_SCRIPT: ${{ inputs.repository-script }}
