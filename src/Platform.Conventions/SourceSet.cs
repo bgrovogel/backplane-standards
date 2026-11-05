@@ -60,6 +60,13 @@ public sealed class SourceSet
     public static SourceSet Together(params SourceSet[] sets) =>
         new(sets.Length == 0 ? string.Empty : sets[0].Root, () => [.. sets.SelectMany(set => set.Trees)]);
 
+    /// <summary>The files of another set that satisfy a condition.</summary>
+    /// <param name="all">The set to choose from; its root is kept.</param>
+    /// <param name="include">Chooses a file.</param>
+    /// <returns>A set of the chosen files.</returns>
+    public static SourceSet Subset(SourceSet all, Func<SyntaxTree, bool> include) =>
+        new(all.Root, () => [.. all.Trees.Where(include)]);
+
     /// <summary>A clickable <c>path:line</c> for a node, relative to the root, with forward slashes.</summary>
     /// <param name="node">The syntax node.</param>
     /// <returns>Where it is.</returns>
