@@ -68,7 +68,9 @@ def latest_report(tests_folder):
     """The report of the newest run in a test project."""
     reports = reports_in(tests_folder)
     if not reports:
-        raise FileNotFoundError(f'no mutation report under {tests_folder}/StrykerOutput: run `python tools/mutation.py run <project>` first')
+        raise FileNotFoundError(
+            f'no mutation report under {tests_folder}/StrykerOutput: run `python tools/mutation.py run <project>` first'
+        )
     return reports[-1]
 
 
@@ -105,9 +107,14 @@ def _scored(config, name, report, record_it):
     print(f'{name}: score {found.score} ({found.killed} caught, {found.survived} missed; break at {break_at})')
     if record_it:
         if _git('status', '--porcelain'):
-            sys.exit('Not recording: the working tree has uncommitted changes, and a score of code nobody committed names no commit. Commit, then record.')
+            sys.exit(
+                'Not recording: the working tree has uncommitted changes, and a score of code nobody committed names no commit. Commit, then record.'
+            )
         today = datetime.date.today().isoformat()
-        SCORES.write_text(record(SCORES.read_text(encoding='utf-8'), name, found, break_at, today, _git('rev-parse', '--short=7', 'HEAD')), encoding='utf-8')
+        SCORES.write_text(
+            record(SCORES.read_text(encoding='utf-8'), name, found, break_at, today, _git('rev-parse', '--short=7', 'HEAD')),
+            encoding='utf-8',
+        )
         print(f'Recorded in {SCORES.relative_to(ROOT).as_posix()}')
 
 

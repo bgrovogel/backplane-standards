@@ -8,7 +8,12 @@ import unittest
 import mutation
 
 CONFIG = {
-    'base': {'target-framework': 'net10.0', 'reporters': ['progress', 'json'], 'thresholds': {'high': 95, 'low': 90, 'break': 90}, 'concurrency': 2},
+    'base': {
+        'target-framework': 'net10.0',
+        'reporters': ['progress', 'json'],
+        'thresholds': {'high': 95, 'low': 90, 'break': 90},
+        'concurrency': 2,
+    },
     'projects': {
         'Lib': {'tests': 'tests/Lib.Tests', 'project': 'Lib.csproj', 'thresholds': {'break': 93}},
         'Plain': {'tests': 'tests/Plain.Tests', 'project': 'Plain.csproj'},
@@ -18,14 +23,23 @@ CONFIG = {
 
 def report(*statuses):
     """What Stryker's JSON report holds for one file whose mutants ended with the given statuses."""
-    return json.dumps({'schemaVersion': '2', 'files': {'src/A.cs': {'mutants': [{'id': str(index), 'status': status} for index, status in enumerate(statuses)]}}})
+    return json.dumps(
+        {
+            'schemaVersion': '2',
+            'files': {'src/A.cs': {'mutants': [{'id': str(index), 'status': status} for index, status in enumerate(statuses)]}},
+        }
+    )
 
 
 class Configuration(unittest.TestCase):
     def test_a_project_gets_the_base_and_its_own_project_file(self):
         found = mutation.stryker_config(CONFIG, 'Plain')['stryker-config']
 
-        self.assertEqual((found['project'], found['target-framework'], found['thresholds']['break']), ('Plain.csproj', 'net10.0', 90), 'the base applies unless the project says otherwise')
+        self.assertEqual(
+            (found['project'], found['target-framework'], found['thresholds']['break']),
+            ('Plain.csproj', 'net10.0', 90),
+            'the base applies unless the project says otherwise',
+        )
 
     def test_a_project_can_raise_a_threshold_without_losing_the_others(self):
         found = mutation.stryker_config(CONFIG, 'Lib')['stryker-config']['thresholds']
@@ -69,10 +83,17 @@ class Reports(unittest.TestCase):
                 path.parent.mkdir(parents=True)
                 path.write_text('{}', encoding='utf-8')
 
-            self.assertIn('2026-11-05.11-30-00', mutation.latest_report(root).as_posix(), 'Stryker names a run by its time, so the last name is the last run')
+            self.assertIn(
+                '2026-11-05.11-30-00',
+                mutation.latest_report(root).as_posix(),
+                'Stryker names a run by its time, so the last name is the last run',
+            )
 
     def test_no_run_yet_is_an_error_that_says_so(self):
-        with tempfile.TemporaryDirectory() as folder, self.assertRaises(FileNotFoundError, msg='scoring a run that never happened must fail'):
+        with (
+            tempfile.TemporaryDirectory() as folder,
+            self.assertRaises(FileNotFoundError, msg='scoring a run that never happened must fail'),
+        ):
             mutation.latest_report(pathlib.Path(folder))
 
 
@@ -112,12 +133,18 @@ class Recording(unittest.TestCase):
     def test_a_new_project_gets_a_row(self):
         text = mutation.record(self.TABLE, 'New', mutation.score_of(report('Killed', 'Survived')), 90, '2026-11-05', 'def5678')
 
-        self.assertIn('| New | 50.0 | 1 | 1 | 90 | 2026-11-05 | def5678 |', text, 'the row says what was measured, against which break, and when')
+        self.assertIn(
+            '| New | 50.0 | 1 | 1 | 90 | 2026-11-05 | def5678 |', text, 'the row says what was measured, against which break, and when'
+        )
 
     def test_a_measured_project_has_its_row_replaced_not_repeated(self):
         text = mutation.record(self.TABLE, 'Old', mutation.score_of(report('Killed')), 85, '2026-11-05', 'def5678')
 
-        self.assertEqual((text.count('| Old |'), '| Old | 100.0 | 1 | 0 | 85 | 2026-11-05 | def5678 |' in text), (1, True), 'a project has one row, the latest')
+        self.assertEqual(
+            (text.count('| Old |'), '| Old | 100.0 | 1 | 0 | 85 | 2026-11-05 | def5678 |' in text),
+            (1, True),
+            'a project has one row, the latest',
+        )
 
 
 class Running(unittest.TestCase):
