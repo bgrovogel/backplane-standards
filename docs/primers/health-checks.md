@@ -40,7 +40,7 @@ Alternatives: pinging the home page (too coarse and heavy); a custom endpoint (r
 
 - `AddHealthChecks().AddDbContextCheck<...>()` is in the Infrastructure layer (`AddInfrastructure`), because only it knows about the database; `MapHealthChecks("/health")` is in the host's `Program.cs`. The Application layer knows nothing of it, as the dependency rule says ([Architecture](../02-architecture.md)).
 - The route is mapped **after** authentication and the rate limiter in the pipeline, but needs no sign-in. Host-filtering tests (`AllowedHostsTests`) use it as the simplest request to send.
-- The deployment guide tells you to point an uptime monitor at it; the compose files use it for container health ([deploying](../../../mortgage-analytics/docs/12-deploying.md) in the reference repo).
+- The deployment guide tells you to point an uptime monitor at it; the compose files use it for container health (`docs/12-deploying.md` in the reference repository, which is private).
 - It is tested with `WebApplicationFactory`: the app starts in memory and `GET /health` must be `Healthy` ([WebApplicationFactory](webapplicationfactory.md)).
 - Starting the app in a test also starts the background backup, which is why one test requests `/health` to be sure the host is running before it looks for the backup.
 

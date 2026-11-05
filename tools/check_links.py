@@ -35,7 +35,9 @@ def broken_links() -> tuple[int, list[str]]:
             link, _, anchor = target.partition('#')
             destination = (path.parent / link).resolve() if link else path
             where = f'{path.relative_to(ROOT).as_posix()}: {target}'
-            if not destination.exists():
+            if ROOT not in destination.parents and destination != ROOT:
+                problems.append(f'{where} (points outside this repository, which a clone on another machine does not have)')
+            elif not destination.exists():
                 problems.append(f'{where} (no such file)')
             elif anchor and destination.suffix == '.md' and anchor not in anchors.get(destination, headings(destination)):
                 problems.append(f'{where} (no such heading)')

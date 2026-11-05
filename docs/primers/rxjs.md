@@ -49,7 +49,7 @@ Two consequences that explain most surprises: nothing runs until subscribed, and
 - **Angular** returns observables from `HttpClient`, `FormControl.valueChanges` and the router. `@angular/core/rxjs-interop` converts between observables and signals (`toSignal`, `toObservable`, `takeUntilDestroyed`) ([Angular primer](angular-for-us.md)).
 - Our stores keep their state in **signals**; the one reusable pipeline, `latestRequest`, turns "the input changed" into "here is the latest result" and hides the RxJS inside it.
 - Tests drive it with fake timers and `of(...)`/`throwError(...)` as stand-in API calls ([Jest primer](jest.md)); a mutation run checks the retry and debounce rules are really asserted ([Stryker](stryker.md)).
-- The server side of the retry is the rate limiter and the compute gate, which answer 429 and 503 with `Retry-After` ([backend docs](../../../mortgage-analytics/docs/04-backend.md)).
+- The server side of the retry is the rate limiter and the compute gate, which answer 429 and 503 with `Retry-After` (`docs/04-backend.md` in the reference repository, which is private).
 
 ## An example from our code
 
