@@ -10,11 +10,13 @@ NuGet restores before it evaluates a package's props, so a project whose `Target
 2026-11-04 with a package that set `TargetFramework`, `Nullable` and `TreatWarningsAsErrors`: the build stopped at `NETSDK1013: The TargetFramework value '' was not recognized`.
 The same settings delivered as an **MSBuild SDK package**, named in `global.json` (`"msbuild-sdks": { "Spike.Sdk": "0.0.1" }`) and added to the project with `<Sdk Name="Spike.Sdk" />`,
 applied before restore: the project got `net10.0`, and a nullable dereference in `Program.cs` failed the build as an error (CS8602), with the package resolved from a local folder feed.
+Building `Platform.Sdk` for real found one more thing: the SDK must be listed **before** the normal one. `Microsoft.NET.Sdk` sets `TreatWarningsAsErrors` to false unless it is already set, so with the order
+reversed every analyzer finding was a warning and the build passed.
 
 ## Decision
 
-We will deliver the build rules as an **MSBuild SDK package** (`Platform.Sdk`), referenced from `global.json` and added to each project beside its normal SDK
-(`Microsoft.NET.Sdk`, `Microsoft.NET.Sdk.Web`), so one package serves libraries, web hosts and test projects. The rules that must hold before restore (target framework, nullable,
+We will deliver the build rules as an **MSBuild SDK package** (`Platform.Sdk`), referenced from `global.json` and listed in each project **before** its normal SDK
+(`<Project>`, `<Sdk Name="Platform.Sdk" />`, `<Sdk Name="Microsoft.NET.Sdk" />`, or `Microsoft.NET.Sdk.Web`), so one package serves libraries, web hosts and test projects. The rules that must hold before restore (target framework, nullable,
 warnings as errors, analysis level, lock files, central package management) live in its `Sdk.props`; analyzer severities travel as a `.globalconfig` the SDK adds. What an
 editor needs to read at once (`.editorconfig`, for formatting) is copied by the application template, because editors do not read a package.
 

@@ -1,0 +1,15 @@
+# Written by tools, not by hand: formatting them would be undone the next time the tool runs.
+package-lock.json
+packages.lock.json
+# The solution file, which Visual Studio and dotnet sln write.
+*.sln
+
+# Formatted by their own tools: C# by the build (.editorconfig), Python by ruff.
+*.cs
+*.py
+
+# Built or generated output.
+bin/
+obj/
+node_modules/
+TestResults/

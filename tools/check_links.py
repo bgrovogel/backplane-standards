@@ -23,7 +23,7 @@ def headings(path: Path) -> set[str]:
 
 def broken_links() -> tuple[int, list[str]]:
     """How many relative links there are, and which of them point nowhere."""
-    files = [path for path in ROOT.rglob('*.md') if '.git' not in path.parts]
+    files = [path for path in ROOT.rglob('*.md') if not {'.git', 'node_modules', 'bin', 'obj'} & set(path.parts)]
     anchors = {path: headings(path) for path in files}
     problems, total = [], 0
     for path in files:

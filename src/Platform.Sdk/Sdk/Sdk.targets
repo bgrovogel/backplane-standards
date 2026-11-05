@@ -1,0 +1,3 @@
+<Project>
+  <!-- Nothing yet: what must run after the project's own targets (checks that read its output) goes here. -->
+</Project>

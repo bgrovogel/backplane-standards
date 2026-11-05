@@ -1,0 +1,41 @@
+{
+  "printWidth": 160,
+  "singleQuote": true,
+  "endOfLine": "auto",
+  "proseWrap": "preserve",
+  "plugins": ["@prettier/plugin-xml", "prettier-plugin-sh", "prettier-plugin-toml", "prettier-plugin-ini"],
+  "overrides": [
+    {
+      "files": ["*.csproj", "*.props", "*.esproj", "*.runsettings", "*.svg"],
+      "options": {
+        "parser": "xml",
+        "xmlWhitespaceSensitivity": "strict"
+      }
+    },
+    {
+      "files": ["*.html"],
+      "options": {
+        "htmlWhitespaceSensitivity": "strict"
+      }
+    },
+    {
+      "files": ["*.env.example"],
+      "options": {
+        "parser": "ini"
+      }
+    },
+    {
+      "files": [".editorconfig"],
+      "options": {
+        "parser": "ini",
+        "iniSpaceAroundEquals": true
+      }
+    },
+    {
+      "files": [".git-blame-ignore-revs"],
+      "options": {
+        "parser": "sh"
+      }
+    }
+  ]
+}

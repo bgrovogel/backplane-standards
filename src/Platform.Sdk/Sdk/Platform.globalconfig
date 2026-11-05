@@ -1,0 +1,27 @@
+is_global = true
+
+# The code style the build enforces (EnforceCodeStyleInBuild is on in Sdk.props, and warnings are errors): file-scoped namespaces, formatting with braces on their
+# own line (Allman), no unused usings, and braces on every if, else, for, foreach and while (one statement or many: a second line under a braceless if is a classic
+# bug, and a block keeps every diff to the lines that changed). An application's .editorconfig overrides any of it.
+csharp_style_namespace_declarations = file_scoped:warning
+dotnet_sort_system_directives_first = true
+
+csharp_new_line_before_open_brace = all
+csharp_new_line_before_else = true
+csharp_new_line_before_catch = true
+csharp_new_line_before_finally = true
+csharp_new_line_before_members_in_object_initializers = false
+csharp_new_line_before_members_in_anonymous_types = false
+csharp_indent_case_contents = true
+csharp_indent_switch_labels = true
+
+dotnet_diagnostic.IDE0055.severity = warning
+dotnet_diagnostic.IDE0005.severity = warning
+dotnet_diagnostic.IDE0161.severity = warning
+dotnet_diagnostic.IDE0011.severity = warning
+csharp_prefer_braces = true:warning
+
+# var only where the right side names the type (new T(), a cast, as) or the type is anonymous; the conventions tests hold the line, and these make the IDE agree.
+csharp_style_var_for_built_in_types = false:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+csharp_style_var_elsewhere = false:suggestion

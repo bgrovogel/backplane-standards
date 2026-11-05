@@ -1,0 +1,46 @@
+root = true
+
+[*]
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{json,yml,yaml,ts,html,scss,css,md}]
+indent_size = 2
+
+[*.cs]
+csharp_style_namespace_declarations = file_scoped:warning
+dotnet_sort_system_directives_first = true
+
+# Formatting, checked in CI by `dotnet format whitespace --verify-no-changes`. Braces on their own line (Allman);
+# a short object initializer may keep several members on one line.
+csharp_new_line_before_open_brace = all
+csharp_new_line_before_else = true
+csharp_new_line_before_catch = true
+csharp_new_line_before_finally = true
+csharp_new_line_before_members_in_object_initializers = false
+csharp_new_line_before_members_in_anonymous_types = false
+csharp_indent_case_contents = true
+csharp_indent_switch_labels = true
+
+# Enforced by the build (EnforceCodeStyleInBuild in Directory.Build.props; warnings are errors): the formatting above,
+# no unused usings, file-scoped namespaces, and braces on every if, else, for, foreach and while (one statement or many:
+# adding a second line under a braceless if is a classic bug, and a block keeps every diff to the lines that changed).
+dotnet_diagnostic.IDE0055.severity = warning
+dotnet_diagnostic.IDE0005.severity = warning
+dotnet_diagnostic.IDE0161.severity = warning
+dotnet_diagnostic.IDE0011.severity = warning
+csharp_prefer_braces = true:warning
+
+# var only where the right side names the type (new T(), a cast, as) or the type is anonymous; VarConventionTests holds
+# the line in CI, and these make the IDE (and `dotnet format style --diagnostics IDE0008`) agree.
+csharp_style_var_for_built_in_types = false:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+csharp_style_var_elsewhere = false:suggestion
+
+# Test projects: Method_Scenario_Expectation names read better with underscores,
+# and inline expected-value arrays keep assertions self-explanatory.
+[tests/**.cs]
+dotnet_diagnostic.CA1707.severity = none
+dotnet_diagnostic.CA1861.severity = none
