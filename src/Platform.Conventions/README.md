@@ -16,6 +16,7 @@ The conventions tests as a package (roadmap task 1.3): rules that read an applic
   | `LayerRule`         | Dependencies point inward: project references, packages and `using` directives per layer                                 | `Layers` (what each layer may depend on)           |
   | `ComplexityRule`    | Method length and complexity capped, as a ratchet                                                                        | `MaxLines`, `MaxComplexity`, `Ceilings`            |
   | `LoggingRule`       | Log templates, not built strings; no personal data or secret in a placeholder                                            | `BannedPlaceholders`                               |
+  | `VagueNamesRule`    | No type, namespace, file or folder named for nothing (`Utils`, `Helpers`, `Common`, `Manager`)                           | `AllowedNames`, `VagueWords`                       |
 
 - **`Fixtures/`**: one abstract NUnit fixture per rule (`VarConventions`, ...). An application inherits it in one line and gets the rule's tests, a "the scan found files" guard included.
 - **`SourceSet`** finds and parses the files (build output and generated code left out), once per run. **`[assembly: Conventions]`** says where the repository is, found from the file that declares the attribute so it

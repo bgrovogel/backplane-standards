@@ -76,6 +76,12 @@ public partial class AcceptanceOnAnotherApplication
     }
 
     [Test]
+    public void NoNameInIt_SaysNothing()
+    {
+        Assert.That(VagueNamesRule.Violations(_all), Is.Empty, "the application names its types, files and folders for what they are");
+    }
+
+    [Test]
     public void TheLayers_AreRespected()
     {
         Layer[] layers =
