@@ -17,6 +17,7 @@ STEP = re.compile(r"Tier\s*=\s*'(?P<tier>\w+)';\s*Name\s*=\s*'(?P<name>[^']+)';\
 REQUIRED = {
     'fast': [
         'format:check',
+        'test:frontend',
         'board.py check',
         'doc_checks/run.py',
         'unittest discover',
@@ -30,6 +31,7 @@ REQUIRED = {
 }
 CI_GATES = [
     'npm run format:check',
+    'npm run test:frontend',
     'python tools/doc_checks/run.py',
     'ruff check tools',
     'ruff format --check tools',

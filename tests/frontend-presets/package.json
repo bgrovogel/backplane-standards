@@ -1,0 +1,11 @@
+{
+  "name": "frontend-presets-tests",
+  "private": true,
+  "description": "Runs ESLint, Prettier, stylelint and tsc with the presets on sample projects that break each rule.",
+  "scripts": {
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@platform/frontend-presets": "0.1.0"
+  }
+}

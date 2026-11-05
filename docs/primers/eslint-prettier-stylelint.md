@@ -2,7 +2,7 @@
 
 > Three tools that keep front-end code clean without human effort: **ESLint** finds bugs and rule breaks, **Prettier** formats everything one way, **stylelint** checks the stylesheets. They are the TypeScript counterparts of the compiler analyzers and `.editorconfig` on the .NET side.
 
-**Read time:** 15 min · **Version:** ESLint 10.3, typescript-eslint 8.72, angular-eslint 22.6, Prettier 3.6.2, stylelint 16.10 (`client/package.json`) · **Last verified:** 2026-11-03
+**Read time:** 15 min · **Version:** ESLint 10.3, typescript-eslint 8.72, angular-eslint 22.6, Prettier 3.6.2, stylelint 16.10 (`client/package.json`; the same pins in `src/frontend-presets/package.json`) · **Last verified:** 2026-11-05
 
 **On this page:** [What it is](#what-it-is) · [Why we use it](#why-we-use-it) · [The big idea](#the-big-idea) · [How it works inside](#how-it-works-inside) ·
 [How it fits](#how-it-fits-with-everything-else) · [Example](#an-example-from-our-code) · [How to use it](#how-to-use-it) · [Rules](#the-rules-we-follow) ·
@@ -107,6 +107,8 @@ npm run lint:styles      # stylelint on SCSS
 npm run typecheck        # tsc on specs and e2e
 ```
 
+**As a package.** This repository holds the same four configurations as [`src/frontend-presets`](../../src/frontend-presets/README.md): `createEslintConfig({ root: __dirname })` for ESLint (including the layer rule, "a feature never imports another", with the layers and the selector prefix as options), one object each for Prettier and stylelint, and a `tsconfig.base.json` with the strict settings. Its tests lint, format and compile small projects that break each rule, so a rule that quietly stops working fails there rather than in an application.
+
 In the editor, install the ESLint and Prettier extensions and turn on "format on save", so most of this never reaches the command line. To disable a rule for one line: `// eslint-disable-next-line rule-name -- reason`; **the reason is mandatory** (a check that rejects a bare disable is still to be added).
 
 ## The rules we follow
@@ -118,7 +120,7 @@ In the editor, install the ESLint and Prettier extensions and turn on "format on
 | Names of three letters or more                                            | ESLint `id-length`              |
 | Angular templates pass the accessibility rules                            | `templateAccessibility` (G-06)  |
 | Formatting-only commits go in `.git-blame-ignore-revs`                    | Practice                        |
-| An ESLint disable carries a reason                                        | A conventions rule (to add)     |
+| An ESLint disable carries a reason                                        | `ClientSuppressionRule` (G-08)  |
 | No `any`, no `console.log` in application code                            | ESLint rule or ratchet (to add) |
 
 ## What goes wrong

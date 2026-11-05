@@ -3,7 +3,7 @@
     The repository's checks, one command per tier, so nobody has to remember which tool to run.
 
 .DESCRIPTION
-    fast     Before every commit. Format, the work board, the documentation checks (links, MAP.md, primers), the Python tool tests and
+    fast     Before every commit. Format, the work board, the documentation checks (links, MAP.md, primers), the front-end preset tests, the Python tool tests and
              style, the convention tests, and a secret scan of what is staged. A minute or two.
     full     Everything CI runs, so CI confirms what you already know: the fast checks, then a warnings-as-errors build and every .NET
              test (the SDK's tests pack it and build real samples, so this is the slow part).
@@ -36,6 +36,7 @@ $Steps = @(
     @{ Tier = 'fast'; Name = 'Format'; Dir = '.'; Cmd = 'npm run format:check' },
     @{ Tier = 'fast'; Name = 'Work board is valid'; Dir = '.'; Cmd = 'python tools/board.py check' },
     @{ Tier = 'fast'; Name = 'Documentation checks'; Dir = '.'; Cmd = 'python tools/doc_checks/run.py' },
+    @{ Tier = 'fast'; Name = 'Front-end preset tests'; Dir = '.'; Cmd = 'npm run test:frontend' },
     @{ Tier = 'fast'; Name = 'Python tool tests'; Dir = '.'; Cmd = 'python -m unittest discover tools' },
     @{ Tier = 'fast'; Name = 'Python lint'; Dir = '.'; Cmd = 'ruff check tools'; Needs = 'ruff' },
     @{ Tier = 'fast'; Name = 'Python format'; Dir = '.'; Cmd = 'ruff format --check tools'; Needs = 'ruff' },

@@ -10,11 +10,23 @@
   },
   "primers": {
     "index": "docs/primers/README.md",
-    "dependency_files": ["Directory.Packages.props", "package.json"],
+    "dependency_files": ["Directory.Packages.props", "package.json", "src/frontend-presets/package.json"],
     "covers": {
       "docs/primers/nunit.md": ["NUnit", "NUnit.*", "NUnit3TestAdapter", "Microsoft.NET.Test.Sdk"],
       "docs/primers/roslyn-conventions-tests.md": ["Microsoft.CodeAnalysis.CSharp"],
-      "docs/primers/eslint-prettier-stylelint.md": ["prettier", "prettier-plugin-*", "@prettier/*"]
+      "docs/primers/eslint-prettier-stylelint.md": [
+        "prettier",
+        "prettier-plugin-*",
+        "@prettier/*",
+        "eslint",
+        "@eslint/js",
+        "eslint-config-prettier",
+        "typescript-eslint",
+        "angular-eslint",
+        "stylelint",
+        "stylelint-config-recommended-scss",
+        "typescript"
+      ]
     },
     "exempt": {},
     "template": { "skip": ["README.md", "00-how-it-fits-together.md"] }

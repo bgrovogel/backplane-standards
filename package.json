@@ -2,9 +2,14 @@
   "name": "platform-standards-repo",
   "private": true,
   "description": "Formatting for every file in this repository: docs, JSON, XML project files, props, YAML, shell.",
+  "workspaces": [
+    "src/frontend-presets",
+    "tests/frontend-presets"
+  ],
   "scripts": {
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "test:frontend": "npm test --workspace tests/frontend-presets"
   },
   "devDependencies": {
     "@prettier/plugin-xml": "3.4.2",
