@@ -26,6 +26,11 @@
     <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
 
+  <PropertyGroup Condition="$(MSBuildProjectName.EndsWith('Tests'))">
+    <IsPackable Condition="'$(IsPackable)' == ''">false</IsPackable>
+    <IsTestProject Condition="'$(IsTestProject)' == ''">true</IsTestProject>
+  </PropertyGroup>
+
   <!-- Analyzer severities and the style options the build enforces. An application's own .editorconfig is read after this and wins. -->
   <ItemGroup>
     <GlobalAnalyzerConfigFiles Include="$(MSBuildThisFileDirectory)Platform.globalconfig" />

@@ -47,7 +47,10 @@ A rule change is then a version bump with a test behind it, not a copy-and-paste
    `Condition="'$(Name)' == ''"`, so a value set earlier (in an application's `Directory.Build.props`) stays, and the project's own body, which is read after, can always override.
 4. `Sdk/Platform.globalconfig` is added as a global analyzer config: the severities (`IDE0055`, `IDE0005`, `IDE0161`, `IDE0011` as warnings, therefore errors) and the style options.
    An application's own `.editorconfig` is read after it and wins.
-5. A project whose name ends in `Tests` also gets `CS1591` switched off, because its method names are its documentation.
+5. A project whose name ends in `Tests` also gets `CS1591` switched off, because its method names are its documentation, `IsTestProject` on, and the **test stack**: NUnit, NSubstitute, their analyzers,
+   coverage and the usings, with their versions. That part is in `Sdk.targets`, not `Sdk.props`, because it needs to know whether the application uses central package management, and a
+   `Directory.Packages.props` only counts once it has been imported, which is after `Sdk.props`. With central management the versions become `PackageVersion` items (an application's own `Include`
+   for the same package wins); without it they are written on the references.
 
 **The order of the two `<Sdk>` lines matters.** `Microsoft.NET.Sdk` sets `TreatWarningsAsErrors` to `false` unless it is already set. With the SDKs in the other order, every finding was a warning
 and the build passed. This was found by a test that failed, which is why each rule has one.
@@ -92,13 +95,15 @@ A rule is proved by a sample that breaks it. If the rule stops applying, the sam
 
 ## What goes wrong
 
-| Symptom                                                        | Cause                                                      | Fix                                                                      |
-| -------------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------ |
-| Warnings do not fail the build                                 | `Platform.Sdk` is listed after `Microsoft.NET.Sdk`         | List it first                                                            |
-| `NU1101`/`The SDK 'Platform.Sdk' specified could not be found` | The feed is not in `nuget.config`, or the version is wrong | Check the source and the version in `global.json`                        |
-| A change to the SDK is not seen                                | The package of that version is cached                      | Use a new version; tests give each run its own version and its own cache |
-| CI cannot restore it                                           | The feed is a folder on one machine                        | A feed CI can reach ([ADR 0004](../adr/0004-repositories.md))            |
-| An editor shows no style errors                                | Editors read `.editorconfig`, not a package                | Copy the template's `.editorconfig`                                      |
+| Symptom                                                                     | Cause                                                                                                                                 | Fix                                                                      |
+| --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| Warnings do not fail the build                                              | `Platform.Sdk` is listed after `Microsoft.NET.Sdk`                                                                                    | List it first                                                            |
+| `NU1101`/`The SDK 'Platform.Sdk' specified could not be found`              | The feed is not in `nuget.config`, or the version is wrong                                                                            | Check the source and the version in `global.json`                        |
+| `NU1015` about the test packages                                            | An application's `Directory.Packages.props` sets `ManagePackageVersionsCentrally` false, or the file is missing in one project's tree | Let the SDK see the file (it is in the project's folder or above)        |
+| An `Update` of a package version in `Directory.Packages.props` does nothing | The SDK adds its versions after that file is read, so there is nothing to update yet                                                  | Use `Include` for the package                                            |
+| A change to the SDK is not seen                                             | The package of that version is cached                                                                                                 | Use a new version; tests give each run its own version and its own cache |
+| CI cannot restore it                                                        | The feed is a folder on one machine                                                                                                   | A feed CI can reach ([ADR 0004](../adr/0004-repositories.md))            |
+| An editor shows no style errors                                             | Editors read `.editorconfig`, not a package                                                                                           | Copy the template's `.editorconfig`                                      |
 
 ## Terms
 

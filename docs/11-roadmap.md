@@ -37,8 +37,8 @@ The work on `mortgage-analytics` ([document 12](12-mortgage-first.md)) needs non
 **Goal:** a new application starts with every gate on, the first time it is built.
 
 **Progress (2026-11-04):** 1.1 is done: this folder is the `platform-standards` repository, public on GitHub. 1.2 is under way: `Platform.Sdk` (an MSBuild SDK package, [ADR 0012](adr/0012-build-rules-as-an-msbuild-sdk.md),
-[primer](primers/msbuild-sdks.md)) carries the compiler and code-style rules, with eleven tests that prove each rule on a sample that breaks it. Still to do in 1.2: `Directory.Packages.props` (versions
-cannot come from a package, so the template copies them) and the analyzers. `mortgage-analytics` keeps its own copies until a feed its CI can reach exists. The standards that lived only in that
+[primer](primers/msbuild-sdks.md)) carries the compiler and code-style rules, with sixteen tests that prove each rule on a sample that breaks it, and the test stack (NUnit, NSubstitute, their analyzers, coverage, the usings) for every project named `Tests`, with its versions. Versions
+_can_ come from an SDK (unlike a package's props), so the earlier idea of the template copying them is dropped. Still to do in 1.2: the analyzers (the shared set of Roslyn analyzer packages). `mortgage-analytics` keeps its own copies until a feed its CI can reach exists. The standards that lived only in that
 application and in working habits are written down in [Ways of working](14-ways-of-working.md) and [UI and UX standards](15-ui-and-ux-standards.md), and the gates G-15 to G-17.
 
 | #    | Task                                                                                                                                                                                          | Exit test                                                                                                                                          |
