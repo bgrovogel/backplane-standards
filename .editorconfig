@@ -44,3 +44,8 @@ csharp_style_var_elsewhere = false:suggestion
 [tests/**.cs]
 dotnet_diagnostic.CA1707.severity = none
 dotnet_diagnostic.CA1861.severity = none
+
+# The convention fixtures are tests that live in a library, so they read like tests.
+[src/Platform.Conventions/Fixtures/**.cs]
+dotnet_diagnostic.CA1707.severity = none
+dotnet_diagnostic.CA1861.severity = none

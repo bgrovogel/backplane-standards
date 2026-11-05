@@ -25,7 +25,7 @@ public class BuildRuleTests
 
     private static BuildResult BuildLibrary(string code, string project = "Sample", string extraProperties = "", Action<SampleBuild>? beforeBuilding = null)
     {
-        using var sample = new SampleBuild().WithProject(project, code, extraProperties);
+        using SampleBuild sample = new SampleBuild().WithProject(project, code, extraProperties);
         beforeBuilding?.Invoke(sample);
         return sample.Build(project);
     }
@@ -156,7 +156,7 @@ public class BuildRuleTests
     [Test]
     public void ATestProject_GetsTheTestStack_WithoutNamingAPackage()
     {
-        using var sample = new SampleBuild().WithProject("Sample.Tests", NUnitTest);
+        using SampleBuild sample = new SampleBuild().WithProject("Sample.Tests", NUnitTest);
 
         BuildResult result = sample.Test("Sample.Tests");
 
@@ -170,7 +170,7 @@ public class BuildRuleTests
     [Test]
     public void TheTestStacksVersions_ComeFromTheSdk()
     {
-        using var sample = new SampleBuild().WithProject("Sample.Tests", NUnitTest);
+        using SampleBuild sample = new SampleBuild().WithProject("Sample.Tests", NUnitTest);
 
         BuildResult result = sample.Build("Sample.Tests");
 
