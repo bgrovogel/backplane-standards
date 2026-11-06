@@ -20,14 +20,12 @@ public static class LayerRule
                 .Select(reference => $"{layer.ProjectName} references {reference}"),
         ];
 
-    /// <summary>Packages in the layer's project file that it may not take; none are flagged for a layer whose packages are not limited.</summary>
+    /// <summary>Packages in the layer's project file that it may not take: any not listed when its packages are limited, and any it is told never to take. Package ids are compared without regard to case.</summary>
     /// <param name="layer">The layer.</param>
     /// <param name="project">Its project file.</param>
     /// <returns>Each package it should not have.</returns>
     public static IReadOnlyList<string> PackageProblems(Layer layer, XDocument project) =>
-        layer.MayTakePackages is null
-            ? []
-            : [.. References(project, "PackageReference").Where(package => !layer.MayTakePackages.Contains(package)).Select(package => $"{layer.ProjectName} takes the package {package}")];
+        [.. References(project, "PackageReference").Where(package => IsNotAllowed(layer, package)).Select(package => $"{layer.ProjectName} takes the package {package}")];
 
     /// <summary>The <c>using</c> directives in the layer's source that it may not have.</summary>
     /// <param name="layer">The layer.</param>
@@ -59,6 +57,10 @@ public static class LayerRule
                 .Select(include => kind == "ProjectReference" ? Path.GetFileNameWithoutExtension(include.Replace('\\', '/')) : include),
         ];
 
-    private static bool StartsWithAny(string name, IReadOnlyCollection<string> namespaces) =>
-        namespaces.Any(space => name == space || name.StartsWith(space + ".", StringComparison.Ordinal));
+    private static bool IsNotAllowed(Layer layer, string package) =>
+        (layer.MayTakePackages is not null && !layer.MayTakePackages.Contains(package, StringComparer.OrdinalIgnoreCase))
+        || StartsWithAny(package, layer.MustNotTakePackages ?? [], StringComparison.OrdinalIgnoreCase);
+
+    private static bool StartsWithAny(string name, IReadOnlyCollection<string> namespaces, StringComparison comparison = StringComparison.Ordinal) =>
+        namespaces.Any(space => name.Equals(space, comparison) || name.StartsWith(space + ".", comparison));
 }

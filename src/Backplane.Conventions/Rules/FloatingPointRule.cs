@@ -22,12 +22,7 @@ public static class FloatingPointRule
     /// <param name="ceilings">The files that may still use some, by relative path, and how many.</param>
     /// <returns>Each file over its ceiling and how many it uses.</returns>
     public static IReadOnlyList<string> OverTheirCeiling(SourceSet source, IReadOnlyCollection<string> moneyFolders, IReadOnlyDictionary<string, int> ceilings) =>
-        [
-            .. InMoneyFolders(source, moneyFolders)
-                .Select(tree => (Path: source.RelativePath(tree.FilePath), Count: KeywordCount(tree)))
-                .Where(file => file.Count > ceilings.GetValueOrDefault(file.Path, 0))
-                .Select(file => $"{file.Path}  {file.Count} (allowed {ceilings.GetValueOrDefault(file.Path, 0)})"),
-        ];
+        CountCeilings.Over(InMoneyFolders(source, moneyFolders), KeywordCount, ceilings);
 
     /// <summary>Ceilings that are higher than the file now needs: a ratchet only tightens.</summary>
     /// <param name="source">The files to read.</param>
@@ -35,13 +30,8 @@ public static class FloatingPointRule
     /// <param name="ceilings">The files that may still use some, by relative path, and how many.</param>
     /// <returns>Each slack ceiling and what to lower it to.</returns>
     public static IReadOnlyList<string> SlackCeilings(SourceSet source, IReadOnlyCollection<string> moneyFolders, IReadOnlyDictionary<string, int> ceilings) =>
-        [
-            .. ceilings
-                .Select(ceiling => (ceiling.Key, Allowed: ceiling.Value, Used: InMoneyFolders(source, moneyFolders).Where(tree => source.RelativePath(tree.FilePath) == ceiling.Key).Sum(KeywordCount)))
-                .Where(file => file.Used < file.Allowed)
-                .Select(file => $"{file.Key}  uses {file.Used}, allowed {file.Allowed}: lower the ceiling to {file.Used}"),
-        ];
+        CountCeilings.Slack(InMoneyFolders(source, moneyFolders), KeywordCount, ceilings);
 
-    private static IEnumerable<SyntaxTree> InMoneyFolders(SourceSet source, IReadOnlyCollection<string> moneyFolders) =>
-        source.Trees.Where(tree => moneyFolders.Any(folder => source.RelativePath(tree.FilePath).StartsWith(folder, StringComparison.Ordinal)));
+    private static SourceSet InMoneyFolders(SourceSet source, IReadOnlyCollection<string> moneyFolders) =>
+        SourceSet.Subset(source, tree => moneyFolders.Any(folder => source.RelativePath(tree.FilePath).StartsWith(folder, StringComparison.Ordinal)));
 }

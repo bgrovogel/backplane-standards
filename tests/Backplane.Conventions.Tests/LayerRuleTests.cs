@@ -39,6 +39,29 @@ public class LayerRuleTests
     }
 
     [Test]
+    public void TheAwsSdk_IsFlaggedAsAPackageAndAsANamespace_InALayerThatMustNotKnowIt()
+    {
+        Layer core = new("App.Core", [], MustNotTakePackages: Layer.AwsSdk, MustNotUse: Layer.AwsSdk);
+        XDocument project = Project("<PackageReference Include=\"AWSSDK.S3\" /><PackageReference Include=\"Amazon.Lambda.Core\" /><PackageReference Include=\"awssdk.core\" /><PackageReference Include=\"Amazing.Thing\" /><PackageReference Include=\"AmazonLike\" />");
+        SourceSet source = SourceSet.OfText("using Amazon.S3;\nusing AmazonLike;\nclass Sample { }");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(LayerRule.PackageProblems(core, project), Is.EqualTo(new[] { "App.Core takes the package AWSSDK.S3", "App.Core takes the package Amazon.Lambda.Core", "App.Core takes the package awssdk.core" }), "the SDK's packages are found whatever their case, and a name that only starts with the same letters is not");
+            Assert.That(LayerRule.UsingProblems(core, source), Has.Count.EqualTo(1), "a using of the SDK's namespace is found, and AmazonLike is not part of it");
+            Assert.That(LayerRule.PackageProblems(Api, project), Is.Empty, "a layer with no such limit may take them: the adapters live there");
+        });
+    }
+
+    [Test]
+    public void APackageThatIsBothUnlistedAndInTheBannedGroup_IsReportedOnce()
+    {
+        Layer core = new("App.Core", [], MayTakePackages: ["FluentValidation"], MustNotTakePackages: Layer.AwsSdk);
+
+        Assert.That(LayerRule.PackageProblems(core, Project("<PackageReference Include=\"AWSSDK.S3\" />")), Has.Count.EqualTo(1), "one package, one line");
+    }
+
+    [Test]
     public void ForbiddenUsings_AreFlagged_InTheirLayer_AndOrdinaryOnesAreNot()
     {
         SourceSet sample = SourceSet.OfText("using System;\nusing Microsoft.EntityFrameworkCore;\nusing static Npgsql.NpgsqlDbType;\nusing Alias = Microsoft.AspNetCore.Http.HttpContext;\nusing FluentValidation;\nclass Sample { }");

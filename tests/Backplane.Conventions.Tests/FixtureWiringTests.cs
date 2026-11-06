@@ -23,6 +23,8 @@ public class FixtureWiringTests
             {
                 var x = Compute();
                 double d = 1.5;
+                System.DateTime.Now.ToString();
+                dynamic any = 1;
                 Assert.AreEqual(1, 2);
                 Assert.That(1, Is.EqualTo(1));
                 Assert.That(2, Is.EqualTo(2), "two");
@@ -71,6 +73,8 @@ public class FixtureWiringTests
         yield return Case("Complexity ratchet", () => new ComplexityOn(), Bad, SlackCeilings(), nameof(ComplexityConventions.NoMethod_IsLongerOrMoreComplexThanItsCeiling));
         yield return Case("FileLayout", () => new FileLayoutOn(), Bad);
         yield return Case("FloatingPoint", () => new FloatingPointOn(), Bad);
+        yield return Case("Dynamic", () => new DynamicOn(), Bad);
+        yield return Case("LocalTime", () => new LocalTimeOn(), Bad);
         yield return Case("Logging", () => new LoggingOn(), Bad);
         yield return Case("Naming", () => new NamingOn(), Bad);
         yield return Case("Suppression", () => new SuppressionOn(), Bad);
@@ -86,6 +90,8 @@ public class FixtureWiringTests
         yield return Case("Complexity", () => new ComplexityOn(), Empty);
         yield return Case("FileLayout", () => new FileLayoutOn(), Empty);
         yield return Case("FloatingPoint", () => new FloatingPointOn(), Empty);
+        yield return Case("Dynamic", () => new DynamicOn(), Empty);
+        yield return Case("LocalTime", () => new LocalTimeOn(), Empty);
         yield return Case("Logging", () => new LoggingOn(), Empty);
         yield return Case("Naming", () => new NamingOn(), Empty);
         yield return Case("Suppression", () => new SuppressionOn(), Empty);
@@ -304,6 +310,22 @@ public class FixtureWiringTests
     {
         protected override IReadOnlyCollection<string> MoneyFolders => ["Loans/", "Fees/"];
 
+        protected override IReadOnlyDictionary<string, int> Ceilings => new Dictionary<string, int> { ["Loans/Other.cs"] = 3 };
+
+        protected override SourceSet Production => Scenario.Source;
+    }
+
+    [Explicit("built and run by FixtureWiringTests, not on its own")]
+    private sealed class DynamicOn : DynamicConventions
+    {
+        protected override IReadOnlyDictionary<string, int> Ceilings => new Dictionary<string, int> { ["Loans/Other.cs"] = 3 };
+
+        protected override SourceSet Production => Scenario.Source;
+    }
+
+    [Explicit("built and run by FixtureWiringTests, not on its own")]
+    private sealed class LocalTimeOn : LocalTimeConventions
+    {
         protected override IReadOnlyDictionary<string, int> Ceilings => new Dictionary<string, int> { ["Loans/Other.cs"] = 3 };
 
         protected override SourceSet Production => Scenario.Source;

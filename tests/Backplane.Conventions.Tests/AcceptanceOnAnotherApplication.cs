@@ -93,6 +93,18 @@ public partial class AcceptanceOnAnotherApplication
     }
 
     [Test]
+    public void TheClockAndDynamicRules_FindNothing_InTheApplicationTheyWereWrittenFor()
+    {
+        Dictionary<string, int> none = [];
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(LocalTimeRule.OverTheirCeiling(_production, none), Is.Empty, "no production file reads the local clock");
+            Assert.That(DynamicRule.OverTheirCeiling(_production, none), Is.Empty, "no production file uses dynamic");
+        });
+    }
+
+    [Test]
     public void NoNameInIt_SaysNothing()
     {
         Assert.That(VagueNamesRule.Violations(_all), Is.Empty, "the application names its types, files and folders for what they are");

@@ -7,6 +7,7 @@ namespace Backplane.Conventions;
 /// <param name="ProjectName">The layer's project, which is also its folder under the source folder: <c>MyApp.Domain</c>.</param>
 /// <param name="MayReference">The projects it may reference by name (<c>MyApp.Domain</c>); none for the innermost layer.</param>
 /// <param name="MayTakePackages">The packages it may have, or null when it is an adapter or host and packages are not limited.</param>
+/// <param name="MustNotTakePackages">Packages it must not have, by name or by the start of a name (<see cref="Layer.AwsSdk"/>), whatever <paramref name="MayTakePackages"/> says.</param>
 /// <param name="MustNotUse">Namespaces it must not use (<c>Microsoft.EntityFrameworkCore</c>, <c>MyApp.Api</c>).</param>
 /// <param name="MayOnlyUse">Namespaces it may use, if it is limited to its own and the base library (<c>System</c>, <c>MyApp.Domain</c>); null when it is not.</param>
 public sealed record Layer(
@@ -14,4 +15,9 @@ public sealed record Layer(
     IReadOnlyList<string> MayReference,
     IReadOnlyList<string>? MayTakePackages = null,
     IReadOnlyList<string>? MustNotUse = null,
-    IReadOnlyList<string>? MayOnlyUse = null);
+    IReadOnlyList<string>? MayOnlyUse = null,
+    IReadOnlyList<string>? MustNotTakePackages = null)
+{
+    /// <summary>The AWS SDK: its packages (<c>AWSSDK.S3</c>, <c>Amazon.Lambda.Core</c>) and its namespaces (<c>Amazon.S3</c>). A layer that holds business rules names this so the cloud stays behind a port.</summary>
+    public static IReadOnlyList<string> AwsSdk { get; } = ["Amazon", "AWSSDK"];
+}
