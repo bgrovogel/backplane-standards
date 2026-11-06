@@ -105,6 +105,20 @@ public partial class AcceptanceOnAnotherApplication
     }
 
     [Test]
+    public void TheContractRule_FindsNoDomainTypeInTheContracts_AndSeesBoth()
+    {
+        string[] contracts = ["src/MortgageAnalytics.Application/Contracts/"];
+        string[] domain = ["src/MortgageAnalytics.Domain/"];
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(ContractRule.TypeNames(_production, contracts), Has.Count.GreaterThan(5), "the contract types are found");
+            Assert.That(ContractRule.TypeNames(_production, domain), Has.Count.GreaterThan(20), "and the domain's");
+            Assert.That(ContractRule.DomainTypesExposed(_production, contracts, domain), Is.Empty, "no contract exposes a domain type");
+        });
+    }
+
+    [Test]
     public void NoNameInIt_SaysNothing()
     {
         Assert.That(VagueNamesRule.Violations(_all), Is.Empty, "the application names its types, files and folders for what they are");

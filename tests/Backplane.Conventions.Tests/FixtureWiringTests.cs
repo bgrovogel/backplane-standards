@@ -43,7 +43,7 @@ public class FixtureWiringTests
         }
         """;
 
-    private static readonly SourceSet Bad = SourceSet.OfText(("Loans/Util.cs", BadCode), ("Loans/Mail.cs", MailCode), ("Loans/Wrong.cs", "class Other { }"));
+    private static readonly SourceSet Bad = SourceSet.OfText(("Loans/Util.cs", BadCode), ("Loans/Mail.cs", MailCode), ("Loans/Wrong.cs", "class Other { }"), ("Domain/Money.cs", "public record Money(decimal Value);"), ("Contracts/Request.cs", "public record Request(Money Amount);"));
 
     private static readonly SourceSet Empty = SourceSet.Together();
 
@@ -69,6 +69,7 @@ public class FixtureWiringTests
     public static IEnumerable<TestCaseData> ApplicationsThatBreakTheirRule()
     {
         yield return Case("Assertion", () => new AssertionOn(), Bad);
+        yield return Case("ContractLayering", () => new ContractOn(), Bad);
         yield return Case("Complexity", () => new ComplexityOn(), Bad, skip: nameof(ComplexityConventions.EveryCeiling_IsStillNeeded));
         yield return Case("Complexity ratchet", () => new ComplexityOn(), Bad, SlackCeilings(), nameof(ComplexityConventions.NoMethod_IsLongerOrMoreComplexThanItsCeiling));
         yield return Case("FileLayout", () => new FileLayoutOn(), Bad);
@@ -87,6 +88,7 @@ public class FixtureWiringTests
     public static IEnumerable<TestCaseData> ApplicationsWithNoSource()
     {
         yield return Case("Assertion", () => new AssertionOn(), Empty);
+        yield return Case("ContractLayering", () => new ContractOn(), Empty);
         yield return Case("Complexity", () => new ComplexityOn(), Empty);
         yield return Case("FileLayout", () => new FileLayoutOn(), Empty);
         yield return Case("FloatingPoint", () => new FloatingPointOn(), Empty);
@@ -311,6 +313,16 @@ public class FixtureWiringTests
         protected override IReadOnlyCollection<string> MoneyFolders => ["Loans/", "Fees/"];
 
         protected override IReadOnlyDictionary<string, int> Ceilings => new Dictionary<string, int> { ["Loans/Other.cs"] = 3 };
+
+        protected override SourceSet Production => Scenario.Source;
+    }
+
+    [Explicit("built and run by FixtureWiringTests, not on its own")]
+    private sealed class ContractOn : ContractLayeringConventions
+    {
+        protected override IReadOnlyCollection<string> ContractFolders => ["Contracts/"];
+
+        protected override IReadOnlyCollection<string> DomainFolders => ["Domain/"];
 
         protected override SourceSet Production => Scenario.Source;
     }
