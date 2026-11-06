@@ -107,7 +107,7 @@ npm run lint:styles      # stylelint on SCSS
 npm run typecheck        # tsc on specs and e2e
 ```
 
-**As a package.** This repository holds the same four configurations as [`src/frontend-presets`](../../src/frontend-presets/README.md): `createEslintConfig({ root: __dirname })` for ESLint (including the layer rule, "a feature never imports another", with the layers and the selector prefix as options), one object each for Prettier and stylelint, and a `tsconfig.base.json` with the strict settings. Its tests lint, format and compile small projects that break each rule, so a rule that quietly stops working fails there rather than in an application.
+**As a package.** This repository holds the same four configurations as [`src/frontend-presets`](../../src/frontend-presets/README.md): `createEslintConfig({ root: __dirname })` for ESLint (including the layer rule, "a feature never imports another", and "a component never imports `HttpClient`", with the layers and the selector prefix as options), one object each for Prettier and stylelint, and a `tsconfig.base.json` with the strict settings. Its tests lint, format and compile small projects that break each rule, so a rule that quietly stops working fails there rather than in an application.
 
 In the editor, install the ESLint and Prettier extensions and turn on "format on save", so most of this never reaches the command line. To disable a rule for one line: `// eslint-disable-next-line rule-name -- reason`; **the reason is mandatory** (a check that rejects a bare disable is still to be added).
 

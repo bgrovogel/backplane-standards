@@ -16,6 +16,7 @@ const path = require('node:path');
  * @property {string[]} [layers] The layer folders under source, lowest first: each may import the ones before it and nothing after. Default ['core', 'shared'].
  * @property {string} [features] The folder under source with one folder per feature, above every layer; a feature imports the layers and never another feature. Default 'features'.
  * @property {string[]} [allowCrossFeature] Files, relative to root, that may import across features (a spec that builds every feature's store). Name each; keep it short.
+ * @property {string[]} [allowHttpClient] Component files, relative to root, that may still import HttpClient (a ratchet for code that has not moved to a service yet). Name each; keep it short.
  */
 
 /** A no-restricted-imports setting that refuses any import whose path passes through one of these folders. */
@@ -32,10 +33,18 @@ const foldersIn = (directory) =>
 
 /**
  * The ESLint flat configuration of an Angular client: the recommended sets, naming, braces, the Angular selector prefix, accessibility in
- * templates, Prettier's agreement, and the layers of src/app.
+ * templates, Prettier's agreement, the layers of src/app, and no HttpClient in a component.
  * @param {Options} options
  */
-function createEslintConfig({ root, source = 'src/app', prefix = 'app', layers = ['core', 'shared'], features = 'features', allowCrossFeature = [] }) {
+function createEslintConfig({
+    root,
+    source = 'src/app',
+    prefix = 'app',
+    layers = ['core', 'shared'],
+    features = 'features',
+    allowCrossFeature = [],
+    allowHttpClient = [],
+}) {
     // One folder per feature: the list is read, not typed, so a new feature is held to the same rule from its first file.
     const featureNames = foldersIn(path.join(root, source, features));
     const layerRules = layers.map((layer, index) => {
@@ -95,8 +104,29 @@ function createEslintConfig({ root, source = 'src/app', prefix = 'app', layers =
                 ],
             },
         })),
+        // A component asks a service in core/ and never calls the network itself. This is the TypeScript-aware twin of no-restricted-imports, so a component
+        // in a feature is held to this and to its layer rule at once: a second setting of the same rule would replace the first.
+        {
+            files: ['**/*.component.ts'],
+            rules: {
+                '@typescript-eslint/no-restricted-imports': [
+                    'error',
+                    {
+                        paths: [
+                            {
+                                name: '@angular/common/http',
+                                importNames: ['HttpClient'],
+                                message:
+                                    'A component does not call the network. Put the request in a service in core/ (it owns the URL, the headers and the errors) and inject that.',
+                            },
+                        ],
+                    },
+                ],
+            },
+        },
         // Named exceptions, last so they win.
         ...(allowCrossFeature.length > 0 ? [{ files: allowCrossFeature, rules: { 'no-restricted-imports': 'off' } }] : []),
+        ...(allowHttpClient.length > 0 ? [{ files: allowHttpClient, rules: { '@typescript-eslint/no-restricted-imports': 'off' } }] : []),
     ]);
 }
 

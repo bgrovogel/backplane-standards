@@ -133,15 +133,15 @@ Rules of thumb when writing a component: keep it small; read state from a store;
 
 ## The rules we follow
 
-| Rule                                                                         | Enforced by                                                         |
-| ---------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| Standalone components, signals for state, new control flow in templates      | Review; Angular lint rules                                          |
-| `features` never import other `features`; components never call `HttpClient` | Import lint rule (to add, [G-10](../03-quality-gates.md#the-gates)) |
-| Every page has loading, empty and error states                               | e2e per page; review                                                |
-| Every visible string is translated and every language is complete            | `translations.spec.ts`                                              |
-| Template accessibility rules pass                                            | `angular-eslint` `templateAccessibility`                            |
-| The initial bundle stays within budget                                       | `angular.json` budgets (G-30)                                       |
-| Pure logic lives in plain functions in their own files                       | Review                                                              |
+| Rule                                                                         | Enforced by                                                                                                               |
+| ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Standalone components, signals for state, new control flow in templates      | Review; Angular lint rules                                                                                                |
+| `features` never import other `features`; components never call `HttpClient` | Import lint rule in [`frontend-presets`](../../src/frontend-presets/README.md) ([G-10](../03-quality-gates.md#the-gates)) |
+| Every page has loading, empty and error states                               | e2e per page; review                                                                                                      |
+| Every visible string is translated and every language is complete            | `translations.spec.ts`                                                                                                    |
+| Template accessibility rules pass                                            | `angular-eslint` `templateAccessibility`                                                                                  |
+| The initial bundle stays within budget                                       | `angular.json` budgets (G-30)                                                                                             |
+| Pure logic lives in plain functions in their own files                       | Review                                                                                                                    |
 
 ## What goes wrong
 
